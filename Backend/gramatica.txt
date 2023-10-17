@@ -1,0 +1,205 @@
+grammar SwiftGrammar; 
+
+options {
+  tokenVocab = SwiftLexer;
+}
+
+program
+: block EOF
+;
+
+block 
+: ins+=instruction+
+;
+
+instruction 
+: printstmt PCOMA? 
+| variablestmt PCOMA? 
+| guardstmt           
+| ifstmt              
+| switchstmt          
+| whilestmt           
+| forstmt             
+| funvecstmt         
+| BREAK PCOMA?       
+| CONTINUE PCOMA?    
+| RETURN expr PCOMA? 
+| funcallstmt        
+| funcstmt                                       
+| structCreation                                 
+;
+
+
+structCreation
+: STRUCT ID LLAVEIZQ listStructDec LLAVEDER 
+;
+
+listStructDec 
+: listStructDec COMA VAR ID DOSP typestmt
+| VAR ID DOSP typestmt 
+|  
+;
+
+funcstmt 
+: FUNC ID  PARIZQ PARDER LLAVEIZQ block LLAVEDER                                  
+| FUNC ID PARIZQ listParamsFunc PARDER LLAVEIZQ block LLAVEDER                    
+| FUNC ID  PARIZQ PARDER FLECHA typestmt LLAVEIZQ block LLAVEDER                  
+| FUNC ID PARIZQ listParamsFunc PARDER FLECHA typestmt LLAVEIZQ block LLAVEDER    
+;
+
+listParamsFunc 
+: listParamsFunc COMA (ID|GBAJO)? ID DOSP INOUT? typestmt 
+| (ID|GBAJO)? ID DOSP INOUT? typestmt 
+|  
+;
+
+funcallstmt 
+: ID PARIZQ PARDER  
+| ID PARIZQ listParams PARDER     
+;
+
+funcallestmt 
+: ID PARIZQ PARDER   
+| ID PARIZQ listParams PARDER  
+;
+
+printstmt 
+: PRINT PARIZQ expr PARDER      
+| PRINT PARIZQ listParams PARDER 
+;
+
+variablestmt 
+: VAR ID DOSP typestmt IG expr  
+| VAR ID IG expr                
+| VAR ID DOSP typestmt INTCE    
+| LET ID IG primitives    
+| LET ID DOSP typestmt IG primitives
+| LET ID IG expr                    
+| LET ID DOSP typestmt IG expr      
+| LET ID IG expr                    
+| ID IG expr 
+| ID CORIZQ e1=expr CORDER IG e2=expr  
+| ID e1=expr IG e2=expr                
+| ID ADD IG expr     
+| ID SUB IG expr     
+| VAR ID DOSP typestmt IG expr   
+| VAR ID DOSP typestmt IG CORIZQ CORDER 
+| VAR ID IG expr  
+;
+
+typestmt 
+: INT    
+| FLOAT  
+| TSTRING
+| BOOL   
+| CHAR   
+| CORIZQ type2stmt CORDER
+;
+
+type2stmt 
+: INT     
+| FLOAT   
+| TSTRING 
+| BOOL    
+| CHAR    
+| CORIZQ type2stmt CORDER  
+;
+
+funvecstmt 
+: ID PUNTO APPEND PARIZQ expr PARDER           
+| ID PUNTO REMOVELAST PARIZQ PARDER            
+| ID PUNTO REMOVE PARIZQ AT DOSP expr PARDER   
+;
+
+guardstmt 
+:GUARD expr ELSE LLAVEIZQ block LLAVEDER    
+;
+
+ifstmt 
+: IF expr LLAVEIZQ block LLAVEDER        
+| IF expr LLAVEIZQ block LLAVEDER ELSE LLAVEIZQ block LLAVEDER 
+| IF expr LLAVEIZQ block LLAVEDER elifs                              
+| IF expr LLAVEIZQ block LLAVEDER elifs ELSE LLAVEIZQ block LLAVEDER
+;
+
+elifs 
+:elifs ELSE IF expr LLAVEIZQ block LLAVEDER 
+| ELSE IF expr LLAVEIZQ block LLAVEDER
+;
+
+switchstmt 
+: SWITCH expr LLAVEIZQ cases DEFAULT DOSP block LLAVEDER  
+| SWITCH expr LLAVEIZQ cases LLAVEDER                     
+;
+
+cases 
+:cases CASE expr DOSP block
+|CASE expr DOSP block
+;
+
+whilestmt 
+: WHILE expr LLAVEIZQ block LLAVEDER  
+;
+
+forstmt 
+: FOR ID IN expr TRESP expr LLAVEIZQ block LLAVEDER   
+| FOR ID IN expr LLAVEIZQ block LLAVEDER                    
+;
+
+
+expr 
+:expr (MUL|DIV|MOD) expr      
+|expr (ADD|SUB) expr          
+|expr (MAY_IG|MAYOR) expr     
+|expr (MEN_IG|MENOR) expr     
+|expr (IG_IG|DIF) expr        
+|expr AND expr                
+|expr OR expr                 
+| NOT expr                           
+| SUB expr                           
+| PARIZQ expr PARDER                         
+| ID                                         
+| primitives                                 
+| INT PARIZQ expr PARDER           
+| FLOAT PARIZQ expr PARDER         
+| TSTRING PARIZQ expr PARDER       
+| listArray                           
+| CORIZQ listParams CORDER            
+| ID PUNTO COUNT                      
+| ID PUNTO ISEMPTY                    
+| listAceso                           
+| ID PARIZQ listStructExp PARDER      
+| funcallestmt                        
+;
+
+
+primitives 
+: NUMBER                             
+| CHARACTER
+| STRING
+| TRU                                                      
+| FAL                                                      
+| NIL                                                      
+;
+
+listParams
+:listParams COMA expr 
+| expr 
+;
+
+listArray 
+:listArray CORIZQ expr CORDER
+| ID 
+| listArray PUNTO ID
+;
+
+listAceso 
+:listAceso CORIZQ expr CORDER
+| CORIZQ expr CORDER
+;
+
+listStructExp
+:listStructExp COMA ID DOSP expr 
+| ID DOSP expr
+|   
+;
