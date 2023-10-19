@@ -2,6 +2,7 @@ package expressions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 )
 
 type CallVar struct {
@@ -15,8 +16,8 @@ func NewCallVariable(lin int, col int, id string) CallVar {
 	return exp
 }
 
-func (p CallVar) Ejecutar(ast *environment.AST, env interface{}) environment.Symbol {
-	result := env.(environment.Environment).GetVariable(p.Id)
+func (p CallVar) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) environment.Value {
+	var result environment.Value
 	return result
 }
 
@@ -32,8 +33,8 @@ func NewFunCallE(lin int, col int, id string, parametros []interface{}) FunCallE
 	return instr
 }
 
-func (p FunCallE) Ejecutar(ast *environment.AST, env interface{}) environment.Symbol {
+func (p FunCallE) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) environment.Value {
 
-	var result environment.Symbol
+	var result environment.Value
 	return result
 }

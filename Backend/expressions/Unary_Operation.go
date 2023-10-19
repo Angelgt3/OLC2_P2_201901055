@@ -2,6 +2,7 @@ package expressions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 	"Backend/interfaces"
 )
 
@@ -17,8 +18,20 @@ func NewOperationUnary(lin int, col int, Op1 interfaces.Expression, Operador str
 	return exp
 }
 
-func (operacion UnaryOperation) Ejecutar(ast *environment.AST, env interface{}) environment.Symbol {
+func (operacion UnaryOperation) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) environment.Value {
+	var result environment.Value
+	//var op1 = operacion.Op_der.Ejecutar(ast, env, gen)
 
-	var result interface{}
-	return environment.Symbol{Lin: operacion.Lin, Col: operacion.Col, Tipo: environment.NULL, Valor: result}
+	switch operacion.Operador {
+	case "!":
+		{
+
+		}
+	case "-":
+		{
+
+		}
+	}
+
+	return result
 }

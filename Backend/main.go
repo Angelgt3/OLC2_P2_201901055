@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/antlr4-go/antlr/v4"
 )
@@ -77,18 +78,35 @@ func ejecutar_analizador(code string) string {
 	Code := listener.Code
 	//create ast
 	var Ast environment.AST
-	//crear el entorno
-	var globalenvioment environment.Environment = environment.NewEnvironment(nil, "GLOBAL")
-	//crear el generador
-	var generador generator.Generator
-	generador = generator.NewGenerator()
-	generador.MainCode = true
 	//ejecución
-	for _, inst := range Code {
-		inst.(interfaces.Instruction).Ejecutar(&Ast, globalenvioment)
+	var globalenvioment environment.Environment = environment.NewEnvironment(nil, "GLOBAL")
+	//create generator
+	var Generator generator.Generator
+	Generator = generator.NewGenerator()
+	//running main
+	Generator.MainCode = true
+	//ejecución
+	for _, bloc := range Code {
+		if strings.Contains(fmt.Sprintf("%T", bloc), "instructions") {
+			resInst := bloc.(interfaces.Instruction).Ejecutar(&Ast, globalenvioment, &Generator)
+			if resInst != nil {
+				//agregando etiquetas de salida
+				for _, lvl := range resInst.(environment.Value).OutLabel {
+					Generator.AddLabel(lvl.(string))
+				}
+			}
+		}
 	}
-
-	return string(Ast.GetPrint())
+	Generator.GenerateFinalCode()
+	var ConsoleOut = ""
+	if len(Ast.GetErrors()) == 0 {
+		for _, item := range Generator.GetFinalCode() {
+			ConsoleOut += item.(string)
+		}
+	} else {
+		//ConsoleOut = Ast.GetErrors()
+	}
+	return string(ConsoleOut)
 }
 
 func NewTreeShapeListener() *TreeShapeListener {
@@ -98,3 +116,5 @@ func NewTreeShapeListener() *TreeShapeListener {
 func (this *TreeShapeListener) ExitS(ctx *parser.SContext) {
 	this.Code = ctx.GetCode()
 }
+
+//antlr4 -Dlanguage=Go -o parser -package parser *.g4

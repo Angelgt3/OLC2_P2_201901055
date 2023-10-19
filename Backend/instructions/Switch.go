@@ -2,6 +2,7 @@ package instructions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 	"Backend/interfaces"
 )
 
@@ -30,12 +31,12 @@ func NewSwitch(lin int, col int, condition interfaces.Expression, cases []interf
 	return switchInstr
 }
 
-func (p Switch) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p Switch) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 
 	return nil
 }
 
-func (p Cases) Ejecutar(ast *environment.AST, env interface{}, condicion environment.Symbol) interface{} {
+func (p Cases) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator, condicion environment.Symbol) interface{} {
 
 	return false
 }

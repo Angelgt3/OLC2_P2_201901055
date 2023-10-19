@@ -2,6 +2,7 @@ package instructions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 	"Backend/interfaces"
 )
 
@@ -15,7 +16,7 @@ func NewBreak(lin int, col int) Break {
 	return Instr
 }
 
-func (p Break) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p Break) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 	return "break"
 }
 
@@ -29,7 +30,7 @@ func NewContinue(lin int, col int) Continue {
 	return Instr
 }
 
-func (p Continue) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p Continue) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 	return "continue"
 }
 
@@ -44,6 +45,6 @@ func NewReturn(lin int, col int, expr interfaces.Expression) Return {
 	return Instr
 }
 
-func (p Return) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p Return) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 	return p.Expresion
 }

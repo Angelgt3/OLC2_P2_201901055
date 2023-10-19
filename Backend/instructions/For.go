@@ -2,6 +2,7 @@ package instructions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 	"Backend/interfaces"
 )
 
@@ -19,7 +20,7 @@ func NewForRange(lin int, col int, id string, condition interfaces.Expression, c
 	return forInstr
 }
 
-func (p ForRange) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p ForRange) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 
 	return nil
 }
@@ -37,7 +38,7 @@ func NewFor(lin int, col int, id string, condition interfaces.Expression, bloque
 	return forInstr
 }
 
-func (p For) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p For) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 
 	return nil
 }

@@ -2,6 +2,7 @@ package instructions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 )
 
 type FunCall struct {
@@ -16,7 +17,7 @@ func NewFunCall(lin int, col int, id string, parametros []interface{}) FunCall {
 	return instr
 }
 
-func (p FunCall) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p FunCall) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 
 	return nil
 }

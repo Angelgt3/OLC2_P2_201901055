@@ -2,6 +2,7 @@ package instructions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 	"Backend/interfaces"
 )
 
@@ -31,12 +32,12 @@ func NewIf(lin int, col int, condition interfaces.Expression, bloque_if []interf
 	return ifInstr
 }
 
-func (p If) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p If) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 
 	return nil
 }
 
-func (p Elif) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p Elif) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 
 	return nil
 }

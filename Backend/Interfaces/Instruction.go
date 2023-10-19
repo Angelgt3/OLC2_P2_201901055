@@ -1,7 +1,10 @@
 package interfaces
 
-import "Backend/environment"
+import (
+	"Backend/environment"
+	"Backend/generator"
+)
 
 type Instruction interface {
-	Ejecutar(ast *environment.AST, env interface{}) interface{}
+	Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{}
 }

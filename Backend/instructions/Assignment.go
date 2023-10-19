@@ -2,6 +2,7 @@ package instructions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 	"Backend/interfaces"
 )
 
@@ -17,7 +18,7 @@ func NewAssigment(lin int, col int, id string, val interfaces.Expression) Assigm
 	return instr
 }
 
-func (p Assigment) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p Assigment) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 
 	return nil
 }
@@ -35,7 +36,7 @@ func NewAssigmentVec(lin int, col int, id string, val interfaces.Expression, val
 	return instr
 }
 
-func (p AssigmentVec) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p AssigmentVec) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 
 	return nil
 }
@@ -53,7 +54,7 @@ func NewAssigmentMa(lin int, col int, id string, val interfaces.Expression, val2
 	return instr
 }
 
-func (p AssigmentMatriz) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p AssigmentMatriz) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 
 	return nil
 }

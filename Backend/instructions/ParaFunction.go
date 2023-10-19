@@ -2,6 +2,7 @@ package instructions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 )
 
 type ParamsDeclaration struct {
@@ -18,7 +19,7 @@ func NewParamsDeclaration(lin int, col int, id string, id2 string, inout string,
 	return instr
 }
 
-func (p ParamsDeclaration) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p ParamsDeclaration) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 
 	return nil
 }

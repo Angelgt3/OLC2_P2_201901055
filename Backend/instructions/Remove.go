@@ -2,6 +2,7 @@ package instructions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 	"Backend/interfaces"
 )
 
@@ -17,7 +18,7 @@ func NewRemove(lin int, col int, id string, expr interfaces.Expression) Remove {
 	return instr
 }
 
-func (p Remove) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p Remove) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 
 	return nil
 }

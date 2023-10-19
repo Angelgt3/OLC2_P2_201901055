@@ -2,6 +2,7 @@ package expressions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 	"Backend/interfaces"
 )
 
@@ -16,9 +17,9 @@ func NewCastingInt(lin int, col int, val interfaces.Expression) CastingInt {
 	return instr
 }
 
-func (p CastingInt) Ejecutar(ast *environment.AST, env interface{}) environment.Symbol {
+func (p CastingInt) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) environment.Value {
+	var result environment.Value
 
-	var result = p.Expresion.Ejecutar(ast, env)
 	return result
 }
 
@@ -33,9 +34,9 @@ func NewCastingFloat(lin int, col int, val interfaces.Expression) CastingFloat {
 	return instr
 }
 
-func (p CastingFloat) Ejecutar(ast *environment.AST, env interface{}) environment.Symbol {
+func (p CastingFloat) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) environment.Value {
+	var result environment.Value
 
-	var result = p.Expresion.Ejecutar(ast, env)
 	return result
 }
 
@@ -50,8 +51,7 @@ func NewCastingString(lin int, col int, val interfaces.Expression) CastingString
 	return instr
 }
 
-func (p CastingString) Ejecutar(ast *environment.AST, env interface{}) environment.Symbol {
-
-	var result = p.Expresion.Ejecutar(ast, env)
+func (p CastingString) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) environment.Value {
+	var result environment.Value
 	return result
 }

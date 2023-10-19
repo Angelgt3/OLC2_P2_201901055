@@ -2,6 +2,7 @@ package expressions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 	"Backend/interfaces"
 )
 
@@ -16,19 +17,9 @@ func NewArray(lin int, col int, list []interface{}) Array {
 	return exp
 }
 
-func (p Array) Ejecutar(ast *environment.AST, env interface{}) environment.Symbol {
-	var tempExp []interface{}
+func (p Array) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) environment.Value {
 
-	for _, s := range p.ListExp {
-		tempExp = append(tempExp, s.(interfaces.Expression).Ejecutar(ast, env))
-	}
-
-	return environment.Symbol{
-		Lin:   p.Lin,
-		Col:   p.Col,
-		Tipo:  environment.ARRAY,
-		Valor: tempExp,
-	}
+	return environment.Value{}
 }
 
 type ArrayAccess struct {
@@ -43,12 +34,7 @@ func NewArrayAccess(lin int, col int, array interfaces.Expression, index interfa
 	return exp
 }
 
-func (p ArrayAccess) Ejecutar(ast *environment.AST, env interface{}) environment.Symbol {
-
-	return environment.Symbol{
-		Lin:   p.Lin,
-		Col:   p.Col,
-		Tipo:  environment.NULL,
-		Valor: 0,
-	}
+func (p ArrayAccess) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) environment.Value {
+	var result environment.Value
+	return result
 }

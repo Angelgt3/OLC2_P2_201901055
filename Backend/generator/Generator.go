@@ -8,7 +8,7 @@ type Generator struct {
 	Temporal        int           //cantidad de temporales
 	Label           int           //cantidad de etiquetas
 	Code            []interface{} //areglo de codigo
-	FinalCode       []interface{} //codigo 3 dirreciones
+	FinalCode       []interface{} //C3D
 	Natives         []interface{} //funciones nativas
 	FuncCode        []interface{} //funciones
 	TempList        []interface{} //temporales
@@ -46,33 +46,25 @@ func (g *Generator) SetMainFlag(newVal bool) {
 	g.MainCode = newVal
 }
 
-// add break lvl
-func (g *Generator) AddBreak(lvl string) {
-	g.BreakLabel = lvl
-}
+/*
+########################
+# Manejo de Temporales
+########################
+*/
 
-// add continue lvl
-func (g *Generator) AddContinue(lvl string) {
-	g.ContinueLabel = lvl
-}
-
-// Generar un nuevo temporal
 func (g *Generator) NewTemp() string {
 	temp := "t" + fmt.Sprintf("%v", g.Temporal)
 	g.Temporal = g.Temporal + 1
-	//Lo guardamos para declararlo
 	g.TempList = append(g.TempList, temp)
 	return temp
 }
 
-// Generador de Label
 func (g *Generator) NewLabel() string {
 	temp := g.Label
 	g.Label = g.Label + 1
 	return "L" + fmt.Sprintf("%v", temp)
 }
 
-// Añade Label al codigo
 func (g *Generator) AddLabel(Label string) {
 	if g.MainCode {
 		g.Code = append(g.Code, Label+":\n")
@@ -195,9 +187,8 @@ func (g *Generator) AddEnd() {
 	}
 }
 
-// agregar headers
 func (g *Generator) GenerateFinalCode() {
-	//****************** add head
+	// agregar headers
 	g.FinalCode = append(g.FinalCode, "/*------HEADER------*/\n")
 	g.FinalCode = append(g.FinalCode, "#include <stdio.h>\n")
 	g.FinalCode = append(g.FinalCode, "#include <math.h>\n")
@@ -205,10 +196,10 @@ func (g *Generator) GenerateFinalCode() {
 	g.FinalCode = append(g.FinalCode, "double stack[30101999];\n")
 	g.FinalCode = append(g.FinalCode, "double P;\n")
 	g.FinalCode = append(g.FinalCode, "double H;\n")
-	g.FinalCode = append(g.FinalCode, "double ")
 	// agregacion de temporales
 	tempArr := g.GetTemps()
 	if len(tempArr) > 0 {
+		g.FinalCode = append(g.FinalCode, "double ")
 		tmpDec := fmt.Sprintf("%v", tempArr[0])
 		tempArr = tempArr[1:]
 		for _, s := range tempArr {
@@ -234,35 +225,10 @@ func (g *Generator) GenerateFinalCode() {
 	}
 	// agregar main
 	g.FinalCode = append(g.FinalCode, "/*------MAIN------*/\n")
-	g.FinalCode = append(g.FinalCode, "void main() {\n")
+	g.FinalCode = append(g.FinalCode, "int main() {\n")
 	g.FinalCode = append(g.FinalCode, "\tP = 0; H = 0;\n\n")
 	for _, s := range g.Code {
 		g.FinalCode = append(g.FinalCode, "\t"+s.(string))
 	}
-	g.FinalCode = append(g.FinalCode, "\n\treturn;\n}\n")
-}
-
-func (g *Generator) GeneratePrintString() {
-	if g.PrintStringFlag {
-		//generando temporales y etiquetas
-		newTemp1 := g.NewTemp()
-		newTemp2 := g.NewTemp()
-		newTemp3 := g.NewTemp()
-		newLvl1 := g.NewLabel()
-		newLvl2 := g.NewLabel()
-		//se genera la funcion printstring
-		g.Natives = append(g.Natives, "void dbrust_printString() {\n")
-		g.Natives = append(g.Natives, "\t"+newTemp1+" = P + 1;\n")
-		g.Natives = append(g.Natives, "\t"+newTemp2+" = stack[(int)"+newTemp1+"];\n")
-		g.Natives = append(g.Natives, "\t"+newLvl2+":\n")
-		g.Natives = append(g.Natives, "\t"+newTemp3+" = heap[(int)"+newTemp2+"];\n")
-		g.Natives = append(g.Natives, "\tif("+newTemp3+" == -1) goto "+newLvl1+";\n")
-		g.Natives = append(g.Natives, "\tprintf(\"%c\", (char)"+newTemp3+");\n")
-		g.Natives = append(g.Natives, "\t"+newTemp2+" = "+newTemp2+" + 1;\n")
-		g.Natives = append(g.Natives, "\tgoto "+newLvl2+";\n")
-		g.Natives = append(g.Natives, "\t"+newLvl1+":\n")
-		g.Natives = append(g.Natives, "\treturn;\n")
-		g.Natives = append(g.Natives, "}\n\n")
-		g.PrintStringFlag = false
-	}
+	g.FinalCode = append(g.FinalCode, "\n\treturn 0;\n}\n")
 }

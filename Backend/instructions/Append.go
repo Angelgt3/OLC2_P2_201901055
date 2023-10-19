@@ -2,6 +2,7 @@ package instructions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 	"Backend/interfaces"
 )
 
@@ -17,7 +18,7 @@ func NewAppend(lin int, col int, id string, val interfaces.Expression) Append {
 	return instr
 }
 
-func (p Append) Ejecutar(ast *environment.AST, env interface{}) interface{} {
-	//Traer simbolo
+func (p Append) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
+
 	return nil
 }

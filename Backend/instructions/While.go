@@ -2,6 +2,7 @@ package instructions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 	"Backend/interfaces"
 )
 
@@ -17,7 +18,7 @@ func NewWhile(lin int, col int, condition interfaces.Expression, bloque []interf
 	return whileInstr
 }
 
-func (p While) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p While) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 
 	return nil
 }

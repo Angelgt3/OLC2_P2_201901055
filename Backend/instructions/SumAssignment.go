@@ -2,6 +2,7 @@ package instructions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 	"Backend/interfaces"
 )
 
@@ -17,7 +18,7 @@ func NewSumAssigment(lin int, col int, id string, val interfaces.Expression) Sum
 	return instr
 }
 
-func (p SumAssigment) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p SumAssigment) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 
 	return nil
 }

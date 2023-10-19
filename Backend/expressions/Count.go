@@ -2,6 +2,7 @@ package expressions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 )
 
 type Count struct {
@@ -15,7 +16,7 @@ func NewCount(lin int, col int, id string) Count {
 	return instr
 }
 
-func (p Count) Ejecutar(ast *environment.AST, env interface{}) environment.Symbol {
-
-	return environment.Symbol{Lin: p.Lin, Col: p.Col, Tipo: environment.INTEGER, Valor: nil}
+func (p Count) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) environment.Value {
+	var result environment.Value
+	return result
 }

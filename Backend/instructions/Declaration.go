@@ -2,6 +2,7 @@ package instructions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 	"Backend/interfaces"
 )
 
@@ -20,9 +21,15 @@ func NewDeclaration(lin int, col int, id string, tipo environment.TipoExpresion,
 	return instr
 }
 
-func (p Declaration) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p Declaration) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 
 	return nil
+}
+
+// validacion matriz
+func (p Declaration) MatrizValidation(ast *environment.AST, env interface{}, result environment.Symbol) bool {
+
+	return true
 }
 
 // funciones
@@ -40,7 +47,7 @@ func NewDeclarationFunc(lin int, col int, id string, tipo environment.TipoExpres
 	return instr
 }
 
-func (p DeclarationFunc) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p DeclarationFunc) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 
 	return nil
 }
@@ -58,7 +65,7 @@ func NewStruct(lin int, col int, id string, list []interface{}) Struct {
 	return instr
 }
 
-func (p Struct) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p Struct) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 	env.(environment.Environment).SaveStruct(p.Id, p.ListAtr)
 	return nil
 }

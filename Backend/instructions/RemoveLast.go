@@ -2,6 +2,7 @@ package instructions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 )
 
 type RemoveLast struct {
@@ -15,7 +16,7 @@ func NewRemoveLast(lin int, col int, id string) RemoveLast {
 	return instr
 }
 
-func (p RemoveLast) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p RemoveLast) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 
 	return nil
 }

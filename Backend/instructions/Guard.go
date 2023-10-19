@@ -2,6 +2,7 @@ package instructions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 	"Backend/interfaces"
 )
 
@@ -17,7 +18,7 @@ func NewGuard(lin int, col int, condition interfaces.Expression, bloque []interf
 	return ifInstr
 }
 
-func (p Guard) Ejecutar(ast *environment.AST, env interface{}) interface{} {
+func (p Guard) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 
 	return nil
 }

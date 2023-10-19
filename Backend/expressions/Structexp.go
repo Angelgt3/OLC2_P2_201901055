@@ -2,6 +2,7 @@ package expressions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 	"Backend/interfaces"
 )
 
@@ -17,8 +18,8 @@ func NewStructExp(lin int, col int, id string, list []interface{}) StructExp {
 	return exp
 }
 
-func (p StructExp) Ejecutar(ast *environment.AST, env interface{}) environment.Symbol {
-	var result environment.Symbol
+func (p StructExp) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) environment.Value {
+	var result environment.Value
 	return result
 }
 
@@ -34,8 +35,8 @@ func NewStructAccess(lin int, col int, str interfaces.Expression, id string) Str
 	return exp
 }
 
-func (p StructAccess) Ejecutar(ast *environment.AST, env interface{}) environment.Symbol {
+func (p StructAccess) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) environment.Value {
 
-	var result environment.Symbol
+	var result environment.Value
 	return result
 }

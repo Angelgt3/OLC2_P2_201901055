@@ -2,6 +2,7 @@ package expressions
 
 import (
 	"Backend/environment"
+	"Backend/generator"
 )
 
 type IsEmpty struct {
@@ -15,7 +16,7 @@ func NewIsEmpty(lin int, col int, id string) IsEmpty {
 	return instr
 }
 
-func (p IsEmpty) Ejecutar(ast *environment.AST, env interface{}) environment.Symbol {
+func (p IsEmpty) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) environment.Value {
 
-	return environment.Symbol{Lin: p.Lin, Col: p.Col, Tipo: environment.BOOLEAN, Valor: nil}
+	return environment.Value{}
 }
