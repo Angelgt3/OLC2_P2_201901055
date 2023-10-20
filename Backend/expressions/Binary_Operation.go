@@ -34,8 +34,8 @@ func (operacion BinaryOperation) Ejecutar(ast *environment.AST, env interface{},
 	var op1, op2, result environment.Value
 	newTemp := gen.NewTemp()
 
-	//SUMA,RESTA,MULTIPLICACION
-	if operacion.Operador == "+" || operacion.Operador == "-" || operacion.Operador == "*" {
+	//SUMA,RESTA,MULTIPLICACION,MODULO -- ARITMETICA
+	if operacion.Operador == "+" || operacion.Operador == "-" || operacion.Operador == "*" || operacion.Operador == "%" {
 		//realiza la operaciones
 		op1 = operacion.Op_izq.Ejecutar(ast, env, gen)
 		op2 = operacion.Op_der.Ejecutar(ast, env, gen)
@@ -44,74 +44,79 @@ func (operacion BinaryOperation) Ejecutar(ast *environment.AST, env interface{},
 			gen.AddExpression(newTemp, op1.Value, op2.Value, operacion.Operador)
 			result = environment.NewValue(newTemp, true, dominante)
 			result.IntValue = op1.IntValue + op2.IntValue
+			return result
 		} else {
-			ast.SetError(" No es posible realizar la operaciones '"+operacion.Operador+"'", operacion.Col, operacion.Lin, env.(environment.Environment).GetEntorno())
+			ast.SetError(" No es posible realizar la operacion '"+operacion.Operador+"'", operacion.Col, operacion.Lin, env.(environment.Environment).GetEntorno())
 		}
 	} else if operacion.Operador == "/" { //DIVISION
-		/*
-			op1 = operacion.Op_izq.Ejecutar(ast, env, gen)
-			op2 = operacion.Op_der.Ejecutar(ast, env, gen)
-			dominante = tabla_dominante[op1.Type][op2.Type]
-			if dominante == environment.INTEGER || dominante == environment.FLOAT {
-				lvl1 := gen.NewLabel()
-				lvl2 := gen.NewLabel()
+		op1 = operacion.Op_izq.Ejecutar(ast, env, gen)
+		op2 = operacion.Op_der.Ejecutar(ast, env, gen)
+		dominante = tabla_dominante[op1.Type][op2.Type]
+		if dominante == environment.INTEGER || dominante == environment.FLOAT {
+			MathError := gen.NewLabel()
+			Terminar := gen.NewLabel()
 
-				gen.AddIf(op2.Value, "0", "!=", lvl1)
-				gen.AddPrintf("c", "77")
-				gen.AddPrintf("c", "97")
-				gen.AddPrintf("c", "116")
-				gen.AddPrintf("c", "104")
-				gen.AddPrintf("c", "69")
-				gen.AddPrintf("c", "114")
-				gen.AddPrintf("c", "114")
-				gen.AddPrintf("c", "111")
-				gen.AddPrintf("c", "114")
-				gen.AddExpression(newTemp, "0", "", "")
-				gen.AddGoto(lvl2)
-				gen.AddLabel(lvl1)
-				gen.AddExpression(newTemp, op1.Value, op2.Value, "/")
-				gen.AddLabel(lvl2)
-				result = environment.NewValue(newTemp, true, dominante)
-			}
-		*/
+			gen.AddIf(op2.Value, "0", "!=", MathError)
+			gen.PrintMathError()
+			gen.AddExpression(newTemp, "0", "", "")
+			gen.AddGoto(Terminar)
+			gen.AddLabel(MathError)
+			gen.AddExpression(newTemp, op1.Value, op2.Value, "/")
+			gen.AddLabel(Terminar)
+			result = environment.NewValue(newTemp, true, dominante)
+			return result
+		} else {
+			ast.SetError(" No es posible realizar la operacion '"+operacion.Operador+"'", operacion.Col, operacion.Lin, env.(environment.Environment).GetEntorno())
+		}
+		// < , > , <= , >= , == , != -- RELACIONAL
+	} else if operacion.Operador == "<" || operacion.Operador == ">" || operacion.Operador == "<=" || operacion.Operador == ">=" || operacion.Operador == "==" || operacion.Operador == "!=" {
+		op1 = operacion.Op_izq.Ejecutar(ast, env, gen)
+		op2 = operacion.Op_der.Ejecutar(ast, env, gen)
+		dominante = tabla_dominante[op1.Type][op2.Type]
+		if dominante == environment.INTEGER || dominante == environment.FLOAT {
+			trueLabel := gen.NewLabel()
+			falseLabel := gen.NewLabel()
+			gen.AddIf(op1.Value, op2.Value, operacion.Operador, trueLabel)
+			gen.AddGoto(falseLabel)
+			result = environment.NewValue("", false, environment.BOOLEAN)
+			result.TrueLabel = append(result.TrueLabel, trueLabel)
+			result.FalseLabel = append(result.FalseLabel, falseLabel)
+			return result
+		} else {
+			ast.SetError(" No es posible realizar la operacion '"+operacion.Operador+"'", operacion.Col, operacion.Lin, env.(environment.Environment).GetEntorno())
+		}
+		// -- LOGICA
+	} else if operacion.Operador == "&&" { // &&
+		op1 = operacion.Op_izq.Ejecutar(ast, env, gen)
+		for _, lvl := range op1.TrueLabel {
+			gen.AddLabel(lvl.(string))
+		}
+		op2 = operacion.Op_der.Ejecutar(ast, env, gen)
+		if (op1.Type == environment.BOOLEAN) && (op2.Type == environment.BOOLEAN) {
+			result = environment.NewValue("", false, environment.BOOLEAN)
+			result.TrueLabel = append(op2.TrueLabel, result.TrueLabel...)
+			result.FalseLabel = append(op1.FalseLabel, result.FalseLabel...)
+			result.FalseLabel = append(op2.FalseLabel, result.FalseLabel...)
+			return result
+		} else {
+			ast.SetError(" No es posible realizar la operacion '"+operacion.Operador+"'", operacion.Col, operacion.Lin, env.(environment.Environment).GetEntorno())
+		}
+	} else if operacion.Operador == "||" { // ||
+		op1 = operacion.Op_izq.Ejecutar(ast, env, gen)
+		for _, lvl := range op1.FalseLabel {
+			gen.AddLabel(lvl.(string))
+		}
+		op2 = operacion.Op_der.Ejecutar(ast, env, gen)
+		if (op1.Type == environment.BOOLEAN) && (op2.Type == environment.BOOLEAN) {
+			result = environment.NewValue("", false, environment.BOOLEAN)
+			result.TrueLabel = append(op1.TrueLabel, result.TrueLabel...)
+			result.TrueLabel = append(op2.TrueLabel, result.TrueLabel...)
+			result.FalseLabel = append(op2.FalseLabel, result.FalseLabel...)
+			return result
+		} else {
+			ast.SetError(" No es posible realizar la operacion '"+operacion.Operador+"'", operacion.Col, operacion.Lin, env.(environment.Environment).GetEntorno())
+		}
 	}
-
-	switch operacion.Operador {
-
-	case "%":
-		{
-
-		}
-	case "<":
-		{
-
-		}
-	case ">":
-		{
-
-		}
-	case "<=":
-		{
-
-		}
-	case ">=":
-		{
-
-		}
-	case "==":
-		{
-
-		}
-	case "!=":
-		{
-
-		}
-	case "&&":
-		{
-
-		}
-	case "||":
-
-	}
-	return result
+	gen.AddBr()
+	return environment.Value{}
 }

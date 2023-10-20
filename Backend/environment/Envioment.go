@@ -1,23 +1,14 @@
 package environment
 
 type Environment struct {
-	Anterior         interface{}
-	Tabla_variable   map[string]Symbol
-	mutable_variable map[string]bool
-	Structs          map[string]Symbol
-	Tabla_funciones  map[string]InstF
-	Id               string
+	Anterior       interface{}
+	Tabla_variable map[string]Symbol
+	Id             string
+	Size           map[string]int
 }
 
 func NewEnvironment(ant interface{}, id string) Environment {
-	return Environment{
-		Anterior:         ant,
-		Tabla_variable:   make(map[string]Symbol),
-		mutable_variable: make(map[string]bool),
-		Structs:          make(map[string]Symbol),
-		Tabla_funciones:  make(map[string]InstF),
-		Id:               id,
-	}
+	return Environment{}
 }
 
 // obtengo entorno actual (string)
