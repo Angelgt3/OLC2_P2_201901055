@@ -2,10 +2,10 @@ package environment
 
 // simbolos
 type Symbol struct {
-	Lin   int
-	Col   int
-	Tipo  TipoExpresion
-	Valor interface{}
+	Lin      int
+	Col      int
+	Tipo     TipoExpresion
+	Posicion int
 }
 
 // funciones

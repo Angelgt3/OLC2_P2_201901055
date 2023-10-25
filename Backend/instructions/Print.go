@@ -20,7 +20,11 @@ func NewPrint(lin int, col int, val interface{}) Print {
 
 func (p Print) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 	var result = p.Value.(interfaces.Expression).Ejecutar(ast, env, gen)
-	if result.Type == environment.INTEGER || result.Type == environment.FLOAT {
+	if result.Type == environment.INTEGER {
+		gen.AddPrintf("d", fmt.Sprintf("%v", result.Value))
+		gen.AddPrintf("c", "10")
+		gen.AddBr()
+	} else if result.Type == environment.FLOAT {
 		gen.AddPrintf("f", fmt.Sprintf("%v", result.Value))
 		gen.AddPrintf("c", "10")
 		gen.AddBr()
