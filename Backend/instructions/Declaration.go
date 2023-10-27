@@ -4,7 +4,9 @@ import (
 	"Backend/environment"
 	"Backend/generator"
 	"Backend/interfaces"
+	"fmt"
 	"strconv"
+	"strings"
 )
 
 // variables
@@ -26,11 +28,10 @@ func (p Declaration) Ejecutar(ast *environment.AST, env interface{}, gen *genera
 	var result environment.Value
 	var newVar environment.Symbol
 	result = p.Expresion.Ejecutar(ast, env, gen)
-	gen.AddComment("Agregando una declaracion")
+	gen.AddComment("Agregando una declaracion variable")
 	newVar = env.(environment.Environment).SaveVariable(p.Id, p.changeable, p.Tipo)
 
 	if result.Type == environment.BOOLEAN {
-
 		newLabel := gen.NewLabel()
 		//add labels
 		for _, lvl := range result.TrueLabel {
@@ -77,7 +78,41 @@ func NewDeclarationFunc(lin int, col int, id string, tipo environment.TipoExpres
 }
 
 func (p DeclarationFunc) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
-
+	var result environment.Value
+	gen.SetMainFlag(false)
+	gen.AddComment("******** Funcion " + p.Id)
+	gen.AddTittle(p.Id)
+	//entorno
+	var envFunc environment.Environment
+	envFunc = environment.NewEnvironment(env.(environment.Environment), p.Id)
+	envFunc.Size["size"] = envFunc.Size["size"] + 1
+	//variables
+	for _, s := range p.Parametros {
+		res := s.(interfaces.Instruction).Ejecutar(ast, env, gen)
+		envFunc.SaveVariable(res.(environment.Value).Value, true, res.(environment.Value).Type)
+	}
+	//instrucciones func
+	for _, s := range p.Bloque {
+		if strings.Contains(fmt.Sprintf("%T", s), "instructions") {
+			resInst := s.(interfaces.Instruction).Ejecutar(ast, envFunc, gen)
+			if resInst != nil {
+				//agregando etiquetas de salida
+				for _, lvl := range resInst.(environment.Value).OutLabel {
+					gen.AddLabel(lvl.(string))
+				}
+			}
+		} else if strings.Contains(fmt.Sprintf("%T", s), "expressions") {
+			result = s.(interfaces.Expression).Ejecutar(ast, envFunc, gen)
+			//agregando etiquetas de salida
+			for _, lvl := range result.OutLabel {
+				gen.AddLabel(lvl.(string))
+			}
+		} else {
+			fmt.Println("Error en bloque")
+		}
+	}
+	gen.AddEnd()
+	gen.SetMainFlag(true)
 	return nil
 }
 

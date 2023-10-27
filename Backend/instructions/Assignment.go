@@ -20,8 +20,13 @@ func NewAssigment(lin int, col int, id string, val interfaces.Expression) Assigm
 }
 
 func (p Assigment) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
-
-	return nil
+	var result environment.Value
+	gen.AddComment("Generando asignacion")
+	variable := env.(environment.Environment).GetVariable(p.Id)
+	result = p.Expresion.Ejecutar(ast, env, gen)
+	gen.AddSetStack(strconv.Itoa(variable.Posicion), result.Value)
+	gen.AddBr()
+	return result
 }
 
 type AssigmentVec struct {
@@ -57,10 +62,6 @@ func NewAssigmentMa(lin int, col int, id string, val interfaces.Expression, val2
 
 func (p AssigmentMatriz) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 	var result environment.Value
-	gen.AddComment("Generando asignacion")
-	variable := env.(environment.Environment).GetVariable(p.Id)
-	result = p.Expresion.Ejecutar(ast, env, gen)
-	gen.AddSetStack(strconv.Itoa(variable.Posicion), result.Value)
-	gen.AddBr()
+
 	return result
 }

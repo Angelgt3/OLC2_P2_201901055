@@ -3,7 +3,6 @@ package expressions
 import (
 	"Backend/environment"
 	"Backend/generator"
-	"fmt"
 	"strconv"
 )
 
@@ -26,11 +25,9 @@ func (p CallVar) Ejecutar(ast *environment.AST, env interface{}, gen *generator.
 	newTemp2 := gen.NewTemp()
 	if gen.MainCode {
 		gen.AddGetStack(newTemp2, strconv.Itoa(retSym.Posicion))
-		fmt.Println("1")
 	} else {
 		gen.AddExpression(newTemp, "P", strconv.Itoa(retSym.Posicion), "+")
 		gen.AddGetStack(newTemp2, "(int)"+newTemp)
-		fmt.Println("2")
 	}
 
 	if retSym.Tipo == environment.BOOLEAN {

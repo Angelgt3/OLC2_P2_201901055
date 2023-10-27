@@ -1,4 +1,4 @@
-// Generated from c:\Users\angge\Documents\GitHub\OLC2_P1_201901055\Backend\SwiftLexer.g4 by ANTLR 4.8
+// Generated from c:\Users\angge\Documents\GitHub\OLC2_P2_201901055\Backend\SwiftLexer.g4 by ANTLR 4.8
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

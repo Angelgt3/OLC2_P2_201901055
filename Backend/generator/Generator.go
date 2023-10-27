@@ -25,7 +25,7 @@ func NewGenerator() Generator {
 		BreakLabel:      "",
 		ContinueLabel:   "",
 		PrintStringFlag: true,
-		MainCode:        false,
+		MainCode:        true,
 	}
 	return generator
 }
@@ -220,6 +220,24 @@ func (g *Generator) AddBr() {
 		g.Code = append(g.Code, "\n")
 	} else {
 		g.FuncCode = append(g.FuncCode, "\n")
+	}
+}
+
+func (g *Generator) AddEnd() {
+	if g.MainCode {
+		g.Code = append(g.Code, "\treturn;\n")
+		g.Code = append(g.Code, "}\n\n")
+	} else {
+		g.FuncCode = append(g.FuncCode, "\treturn;\n")
+		g.FuncCode = append(g.FuncCode, "}\n\n")
+	}
+}
+
+func (g *Generator) AddTittle(target string) {
+	if g.MainCode {
+		g.Code = append(g.Code, "void "+target+"() {\n")
+	} else {
+		g.FuncCode = append(g.FuncCode, "void "+target+"() {\n")
 	}
 }
 
