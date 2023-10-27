@@ -5,27 +5,29 @@ import (
 )
 
 type Generator struct {
-	Temporal        int           //cantidad de temporales
-	Label           int           //cantidad de etiquetas
-	Code            []interface{} //areglo de codigo
-	FinalCode       []interface{} //C3D
-	Natives         []interface{} //funciones nativas
-	FuncCode        []interface{} //funciones
-	TempList        []interface{} //temporales
-	PrintStringFlag bool          //impresion
-	BreakLabel      string        //break
-	ContinueLabel   string        //continue
-	MainCode        bool
+	Temporal           int           //cantidad de temporales
+	Label              int           //cantidad de etiquetas
+	Code               []interface{} //areglo de codigo
+	FinalCode          []interface{} //C3D
+	Natives            []interface{} //funciones nativas
+	FuncCode           []interface{} //funciones
+	TempList           []interface{} //temporales
+	PrintStringFlag    bool          //impresion
+	NativetoStringFlag bool          //to string
+	BreakLabel         string        //break
+	ContinueLabel      string        //continue
+	MainCode           bool
 }
 
 func NewGenerator() Generator {
 	generator := Generator{
-		Temporal:        0,
-		Label:           0,
-		BreakLabel:      "",
-		ContinueLabel:   "",
-		PrintStringFlag: true,
-		MainCode:        true,
+		Temporal:           0,
+		Label:              0,
+		BreakLabel:         "",
+		ContinueLabel:      "",
+		PrintStringFlag:    true,
+		NativetoStringFlag: false,
+		MainCode:           true,
 	}
 	return generator
 }

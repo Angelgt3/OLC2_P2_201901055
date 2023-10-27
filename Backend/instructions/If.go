@@ -68,7 +68,13 @@ func (p If) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Gener
 	if p.Elif != nil {
 		for _, ins := range p.Elif {
 			if elifInstance, ok := ins.(Elif); ok {
-				elifInstance.Ejecutar(ast, env, gen, newLabel)
+				resInst := elifInstance.Ejecutar(ast, env, gen, newLabel)
+				if resInst != nil {
+					//agregando etiquetas de salida
+					for _, lvl := range resInst.(environment.Value).OutLabel {
+						OutLvls = append(OutLvls, lvl)
+					}
+				}
 			}
 		}
 	}
@@ -137,5 +143,4 @@ func (p Elif) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Gen
 
 	result.OutLabel = copiedSlice
 	return result
-
 }
