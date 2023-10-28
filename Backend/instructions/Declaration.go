@@ -80,7 +80,7 @@ func NewDeclarationFunc(lin int, col int, id string, tipo environment.TipoExpres
 func (p DeclarationFunc) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 	var result environment.Value
 	gen.SetMainFlag(false)
-	gen.AddComment("******** Funcion " + p.Id)
+	gen.AddComment("FUNCION " + p.Id)
 	gen.AddTittle(p.Id)
 	//entorno
 	var envFunc environment.Environment
@@ -91,19 +91,17 @@ func (p DeclarationFunc) Ejecutar(ast *environment.AST, env interface{}, gen *ge
 		res := s.(interfaces.Instruction).Ejecutar(ast, env, gen)
 		envFunc.SaveVariable(res.(environment.Value).Value, true, res.(environment.Value).Type)
 	}
-	//instrucciones func
+	//instrucciones funcion
 	for _, s := range p.Bloque {
 		if strings.Contains(fmt.Sprintf("%T", s), "instructions") {
 			resInst := s.(interfaces.Instruction).Ejecutar(ast, envFunc, gen)
 			if resInst != nil {
-				//agregando etiquetas de salida
 				for _, lvl := range resInst.(environment.Value).OutLabel {
 					gen.AddLabel(lvl.(string))
 				}
 			}
 		} else if strings.Contains(fmt.Sprintf("%T", s), "expressions") {
 			result = s.(interfaces.Expression).Ejecutar(ast, envFunc, gen)
-			//agregando etiquetas de salida
 			for _, lvl := range result.OutLabel {
 				gen.AddLabel(lvl.(string))
 			}

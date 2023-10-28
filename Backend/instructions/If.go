@@ -35,11 +35,12 @@ func NewIf(lin int, col int, condition interfaces.Expression, bloque_if []interf
 }
 
 func (p If) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
-	gen.AddComment("Generando If")
+	gen.AddComment("INICIO IF")
 	var condicion, result environment.Value
 	var OutLvls []interface{}
 	condicion = p.Expresion.Ejecutar(ast, env, gen)
 	newLabel := gen.NewLabel()
+	salida := gen.NewLabel()
 	//add true labels
 	for _, lvl := range condicion.TrueLabel {
 		gen.AddLabel(lvl.(string))
@@ -47,6 +48,7 @@ func (p If) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Gener
 	//instrucciones if
 	for _, s := range p.Bloque_if {
 		if strings.Contains(fmt.Sprintf("%T", s), "instructions") {
+			//ejecutar instrucciones
 			resInst := s.(interfaces.Instruction).Ejecutar(ast, env, gen)
 			if resInst != nil {
 				//agregando etiquetas de salida
@@ -59,7 +61,7 @@ func (p If) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Gener
 		}
 	}
 	//add out labels
-	gen.AddGoto(newLabel)
+	gen.AddGoto(salida)
 	//add false labels
 	for _, lvl := range condicion.FalseLabel {
 		gen.AddLabel(lvl.(string))
@@ -68,7 +70,8 @@ func (p If) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Gener
 	if p.Elif != nil {
 		for _, ins := range p.Elif {
 			if elifInstance, ok := ins.(Elif); ok {
-				resInst := elifInstance.Ejecutar(ast, env, gen, newLabel)
+				//ejecutar instrucciones
+				resInst := elifInstance.Ejecutar(ast, env, gen, salida)
 				if resInst != nil {
 					//agregando etiquetas de salida
 					for _, lvl := range resInst.(environment.Value).OutLabel {
@@ -82,6 +85,7 @@ func (p If) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Gener
 	//instrucciones else
 	for _, s := range p.Bloque_else {
 		if strings.Contains(fmt.Sprintf("%T", s), "instructions") {
+			//ejecutar instrucciones
 			resInst := s.(interfaces.Instruction).Ejecutar(ast, env, gen)
 			if resInst != nil {
 				//agregando etiquetas de salida
@@ -89,8 +93,6 @@ func (p If) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Gener
 					OutLvls = append(OutLvls, lvl)
 				}
 			}
-		} else {
-			fmt.Println("Error en bloque")
 		}
 	}
 
@@ -99,8 +101,10 @@ func (p If) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Gener
 	for i, item := range OutLvls {
 		copiedSlice[i] = item
 	}
-
 	result.OutLabel = copiedSlice
+
+	gen.AddLabel(salida)
+	gen.AddComment("FIN If")
 	return result
 }
 
@@ -124,11 +128,9 @@ func (p Elif) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Gen
 					OutLvls = append(OutLvls, lvl)
 				}
 			}
-		} else {
-			fmt.Println("Error en bloque")
 		}
 	}
-	//add out labels
+	//add out
 	gen.AddGoto(salida)
 	//add false labels
 	for _, lvl := range condicion.FalseLabel {

@@ -37,7 +37,7 @@ func (env Environment) SaveVariable(id string, mut bool, tipo TipoExpresion) Sym
 		fmt.Println("La variable "+id+" ya existe ", variable)
 		return env.Tabla_variable[id]
 	}
-	env.Tabla_variable[id] = Symbol{Lin: 0, Col: 0, Tipo: tipo, Posicion: env.Size["size"]}
+	env.Tabla_variable[id] = Symbol{Lin: 0, Col: 0, Tipo: tipo, Posicion: env.Size["size"], Mutable: mut}
 	env.Size["size"] = env.Size["size"] + 1
 	return env.Tabla_variable[id]
 }

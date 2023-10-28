@@ -43,18 +43,16 @@ func (p While) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Ge
 				} else if resInst == "break" {
 					gen.AddGoto(newLabel)
 				} else {
-					//agregando etiquetas de salida
 					for _, lvl := range resInst.(environment.Value).OutLabel {
 						OutLvls = append(OutLvls, lvl)
 					}
 				}
 
 			}
-		} else {
-			fmt.Println("Error en bloque")
 		}
 	}
 	gen.AddGoto(inicio)
+
 	//add false labels
 	for _, lvl := range condicion.FalseLabel {
 		gen.AddLabel(lvl.(string))
