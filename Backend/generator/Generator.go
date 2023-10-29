@@ -146,6 +146,13 @@ func (g *Generator) PrintMathError() {
 	g.AddPrintf("c", "10")
 }
 
+func (g *Generator) PrintNil() {
+	g.AddPrintf("c", "110")
+	g.AddPrintf("c", "105")
+	g.AddPrintf("c", "108")
+	g.AddPrintf("c", "10")
+}
+
 func (g *Generator) PrintTrue() {
 	g.AddPrintf("c", "116")
 	g.AddPrintf("c", "114")

@@ -45,7 +45,6 @@ func (p Primitive) Ejecutar(ast *environment.AST, env interface{}, gen *generato
 		gen.AddExpression("H", "H", "1", "+")
 		gen.AddBr()
 		result = environment.NewValue(newTemp, true, p.Tipo)
-
 	} else if p.Tipo == environment.BOOLEAN {
 		gen.AddComment("Primitivo bool")
 		trueLabel := gen.NewLabel()
@@ -59,6 +58,9 @@ func (p Primitive) Ejecutar(ast *environment.AST, env interface{}, gen *generato
 		result = environment.NewValue("", false, environment.BOOLEAN)
 		result.TrueLabel = append(result.TrueLabel, trueLabel)
 		result.FalseLabel = append(result.FalseLabel, falseLabel)
+	} else if p.Tipo == environment.NULL {
+		result = environment.NewValue(fmt.Sprintf("%v", nil), false, p.Tipo)
+		result.IntValue = -1
 	}
 	return result
 }

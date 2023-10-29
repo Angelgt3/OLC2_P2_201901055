@@ -21,7 +21,7 @@ func NewWhile(lin int, col int, condition interfaces.Expression, bloque []interf
 }
 
 func (p While) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
-	gen.AddComment("Generando While")
+	gen.AddComment("INCIO WHILE")
 	var condicion, result environment.Value
 	var OutLvls []interface{}
 	inicio := gen.NewLabel()
@@ -36,18 +36,20 @@ func (p While) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Ge
 	//instrucciones
 	for _, s := range p.Bloque {
 		if strings.Contains(fmt.Sprintf("%T", s), "instructions") {
-			resInst := s.(interfaces.Instruction).Ejecutar(ast, env, gen)
-			if resInst != nil {
-				if resInst == "continue" {
-					gen.AddGoto(inicio)
-				} else if resInst == "break" {
-					gen.AddGoto(newLabel)
-				} else {
-					for _, lvl := range resInst.(environment.Value).OutLabel {
-						OutLvls = append(OutLvls, lvl)
+			respuesta := s.(interfaces.Instruction).Ejecutar(ast, env, gen)
+			if respuesta != nil {
+				if transeferencia, ok := respuesta.(environment.Value); ok {
+					if transeferencia.Tcontinue {
+						transeferencia.Tcontinue = false
+						gen.AddGoto(inicio)
+					} else if transeferencia.Tbreak {
+						transeferencia.Tbreak = false
+						gen.AddGoto(newLabel)
 					}
 				}
-
+				for _, lvl := range respuesta.(environment.Value).OutLabel {
+					OutLvls = append(OutLvls, lvl)
+				}
 			}
 		}
 	}
@@ -65,5 +67,6 @@ func (p While) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Ge
 	}
 
 	result.OutLabel = copiedSlice
+	gen.AddComment("FIN WHILE")
 	return result
 }

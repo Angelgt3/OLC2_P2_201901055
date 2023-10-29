@@ -18,3 +18,28 @@ type InstF struct {
 	Parametros []interface{}
 	Bloque     []interface{}
 }
+
+// Valor
+type Value struct {
+	Value      string
+	IsTemp     bool
+	Type       TipoExpresion
+	TrueLabel  []interface{}
+	FalseLabel []interface{}
+	OutLabel   []interface{}
+	IntValue   int
+	Tbreak     bool
+	Tcontinue  bool
+}
+
+func NewValue(Val string, temp bool, typee TipoExpresion) Value {
+	result := Value{
+		Value:     Val,
+		IsTemp:    temp,
+		Type:      typee,
+		IntValue:  0,
+		Tbreak:    false,
+		Tcontinue: false,
+	}
+	return result
+}

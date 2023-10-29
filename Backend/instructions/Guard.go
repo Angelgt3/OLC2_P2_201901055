@@ -4,6 +4,8 @@ import (
 	"Backend/environment"
 	"Backend/generator"
 	"Backend/interfaces"
+	"fmt"
+	"strings"
 )
 
 type Guard struct {
@@ -19,6 +21,49 @@ func NewGuard(lin int, col int, condition interfaces.Expression, bloque []interf
 }
 
 func (p Guard) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
+	gen.AddComment("INICIO GUARD")
+	var condicion, result environment.Value
+	var OutLvls []interface{}
+	condicion = p.Expresion.Ejecutar(ast, env, gen)
+	newLabel := gen.NewLabel()
+	//add true labels
+	for _, lvl := range condicion.TrueLabel {
+		gen.AddLabel(lvl.(string))
+	}
+	//add out labels
+	gen.AddGoto(newLabel)
+	//add false labels
+	for _, lvl := range condicion.FalseLabel {
+		gen.AddLabel(lvl.(string))
+	}
 
-	return nil
+	//instrucciones guard
+	for _, s := range p.Bloque {
+		if strings.Contains(fmt.Sprintf("%T", s), "instructions") {
+			respuesta := s.(interfaces.Instruction).Ejecutar(ast, env, gen)
+			if respuesta != nil {
+				if respuesta == "break" {
+					result.Tbreak = true
+					gen.AddGoto(newLabel)
+				} else if respuesta == "continue" {
+					result.Tcontinue = true
+					gen.AddGoto(newLabel)
+				} else {
+					//agregando etiquetas de salida
+					for _, lvl := range respuesta.(environment.Value).OutLabel {
+						OutLvls = append(OutLvls, lvl)
+					}
+				}
+
+			}
+		}
+	}
+	OutLvls = append(OutLvls, newLabel)
+	copiedSlice := make([]interface{}, len(OutLvls))
+	for i, item := range OutLvls {
+		copiedSlice[i] = item
+	}
+	result.OutLabel = copiedSlice
+	gen.AddComment("FIN GUARD")
+	return result
 }

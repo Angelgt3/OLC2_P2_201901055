@@ -49,15 +49,22 @@ func (p If) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Gener
 	for _, s := range p.Bloque_if {
 		if strings.Contains(fmt.Sprintf("%T", s), "instructions") {
 			//ejecutar instrucciones
-			resInst := s.(interfaces.Instruction).Ejecutar(ast, env, gen)
-			if resInst != nil {
-				//agregando etiquetas de salida
-				for _, lvl := range resInst.(environment.Value).OutLabel {
-					OutLvls = append(OutLvls, lvl)
+			respuesta := s.(interfaces.Instruction).Ejecutar(ast, env, gen)
+			if respuesta != nil {
+				fmt.Println(respuesta)
+				if respuesta == "break" {
+					result.Tbreak = true
+					gen.AddGoto(salida)
+				} else if respuesta == "continue" {
+					result.Tcontinue = true
+					gen.AddGoto(salida)
+				} else {
+					//agregando etiquetas de salida
+					for _, lvl := range respuesta.(environment.Value).OutLabel {
+						OutLvls = append(OutLvls, lvl)
+					}
 				}
 			}
-		} else {
-			fmt.Println("Error en bloque")
 		}
 	}
 	//add out labels
@@ -71,10 +78,19 @@ func (p If) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Gener
 		for _, ins := range p.Elif {
 			if elifInstance, ok := ins.(Elif); ok {
 				//ejecutar instrucciones
-				resInst := elifInstance.Ejecutar(ast, env, gen, salida)
-				if resInst != nil {
+				respuesta := elifInstance.Ejecutar(ast, env, gen, salida)
+				if respuesta != nil {
+					if transeferencia, ok := respuesta.(environment.Value); ok {
+						fmt.Println("transeferencia")
+						fmt.Println(transeferencia)
+						if transeferencia.Tcontinue {
+							result.Tcontinue = true
+						} else if transeferencia.Tbreak {
+							result.Tbreak = true
+						}
+					}
 					//agregando etiquetas de salida
-					for _, lvl := range resInst.(environment.Value).OutLabel {
+					for _, lvl := range respuesta.(environment.Value).OutLabel {
 						OutLvls = append(OutLvls, lvl)
 					}
 				}
@@ -86,11 +102,19 @@ func (p If) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Gener
 	for _, s := range p.Bloque_else {
 		if strings.Contains(fmt.Sprintf("%T", s), "instructions") {
 			//ejecutar instrucciones
-			resInst := s.(interfaces.Instruction).Ejecutar(ast, env, gen)
-			if resInst != nil {
-				//agregando etiquetas de salida
-				for _, lvl := range resInst.(environment.Value).OutLabel {
-					OutLvls = append(OutLvls, lvl)
+			respuesta := s.(interfaces.Instruction).Ejecutar(ast, env, gen)
+			if respuesta != nil {
+				if respuesta == "break" {
+					result.Tbreak = true
+					gen.AddGoto(salida)
+				} else if respuesta == "continue" {
+					result.Tcontinue = true
+					gen.AddGoto(salida)
+				} else {
+					//agregando etiquetas de salida
+					for _, lvl := range respuesta.(environment.Value).OutLabel {
+						OutLvls = append(OutLvls, lvl)
+					}
 				}
 			}
 		}
@@ -121,11 +145,19 @@ func (p Elif) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Gen
 	//instrucciones elif
 	for _, s := range p.Bloque_elif {
 		if strings.Contains(fmt.Sprintf("%T", s), "instructions") {
-			resInst := s.(interfaces.Instruction).Ejecutar(ast, env, gen)
-			if resInst != nil {
-				//agregando etiquetas de salida
-				for _, lvl := range resInst.(environment.Value).OutLabel {
-					OutLvls = append(OutLvls, lvl)
+			respuesta := s.(interfaces.Instruction).Ejecutar(ast, env, gen)
+			if respuesta != nil {
+				if respuesta == "break" {
+					result.Tbreak = true
+					gen.AddGoto(salida)
+				} else if respuesta == "continue" {
+					result.Tcontinue = true
+					gen.AddGoto(salida)
+				} else {
+					//agregando etiquetas de salida
+					for _, lvl := range respuesta.(environment.Value).OutLabel {
+						OutLvls = append(OutLvls, lvl)
+					}
 				}
 			}
 		}

@@ -41,7 +41,11 @@ func (operacion BinaryOperation) Ejecutar(ast *environment.AST, env interface{},
 		op2 = operacion.Op_der.Ejecutar(ast, env, gen)
 		dominante = tabla_dominante[op1.Type][op2.Type]
 		if dominante == environment.INTEGER || dominante == environment.FLOAT { //valida el tipo
-			gen.AddExpression(newTemp, op1.Value, op2.Value, operacion.Operador)
+			if operacion.Operador == "%" {
+				gen.AddExpression(newTemp, "(int)"+op1.Value, op2.Value, operacion.Operador)
+			} else {
+				gen.AddExpression(newTemp, op1.Value, op2.Value, operacion.Operador)
+			}
 			result = environment.NewValue(newTemp, true, dominante)
 			result.IntValue = op1.IntValue + op2.IntValue
 			return result
