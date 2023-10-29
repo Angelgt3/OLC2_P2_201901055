@@ -25,11 +25,36 @@ func NewDeclaration(lin int, col int, id string, tipo environment.TipoExpresion,
 }
 
 func (p Declaration) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
-	var result environment.Value
 	var newVar environment.Symbol
-	result = p.Expresion.Ejecutar(ast, env, gen)
-	gen.AddComment("Agregando una declaracion variable")
-	newVar = env.(environment.Environment).SaveVariable(p.Id, p.changeable, p.Tipo)
+	result := p.Expresion.Ejecutar(ast, env, gen)
+	// var valor : string ? | variable con tipo sin valor | para eso nomas
+	if result.Type == environment.NULL && p.Tipo != environment.NULL {
+		result.Type = p.Tipo
+	}
+	//casteo
+	//float | int -> float  | unicamente
+	if p.Tipo == environment.FLOAT && result.Type == environment.INTEGER {
+		// Convertir el int a float64
+		result.Type = environment.FLOAT
+	}
+	//validar tipos
+	if result.Type == environment.ARRAY {
+		if p.ArrayValidation(ast, env, result) { //para array
+
+		} else if p.MatrizValidation(ast, env, result) { //para matriz
+
+		} else {
+			//ast.SetError("La estructura del array es incorrecta", p.Col, p.Lin, env.(environment.Environment).GetEntorno())
+		}
+		// variable con el mismo tipo y valor || variable sin tipo asignado pero con valor
+	} else if result.Type == p.Tipo || (result.Type != p.Tipo && p.Tipo == environment.NULL) {
+		gen.AddComment("Agregando una declaracion variable")
+		newVar = env.(environment.Environment).SaveVariable(p.Id, p.changeable, result.Type)
+		//ast.SetRs(p.Id, "variable", result.Tipo, env.(environment.Environment).GetEntorno(), p.Lin, p.Col)
+	} else {
+
+		//ast.SetError("Los tipos de datos son incorrectos", p.Col, p.Lin, env.(environment.Environment).GetEntorno())
+	}
 
 	if result.Type == environment.BOOLEAN {
 		newLabel := gen.NewLabel()
@@ -54,12 +79,6 @@ func (p Declaration) Ejecutar(ast *environment.AST, env interface{}, gen *genera
 	}
 
 	return result
-}
-
-// validacion matriz
-func (p Declaration) MatrizValidation(ast *environment.AST, env interface{}, result environment.Symbol) bool {
-
-	return true
 }
 
 // funciones
@@ -130,4 +149,15 @@ func NewStruct(lin int, col int, id string, list []interface{}) Struct {
 func (p Struct) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 	env.(environment.Environment).SaveStruct(p.Id, p.ListAtr)
 	return nil
+}
+
+func (p Declaration) ArrayValidation(ast *environment.AST, env interface{}, result environment.Value) bool {
+	//validaciones de array
+
+	return false
+}
+func (p Declaration) MatrizValidation(ast *environment.AST, env interface{}, result environment.Value) bool {
+	//validaciones de matriz
+
+	return false
 }
