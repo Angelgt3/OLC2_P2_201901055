@@ -107,9 +107,14 @@ func (d DeclarationFunc) Ejecutar(ast *environment.AST, env interface{}, gen *ge
 	gen.SetMainFlag(false)
 	gen.AddComment("FUNCION " + d.Id)
 	gen.AddTittle(d.Id)
+	//guardo la funcion
+	env.(environment.Environment).SaveFunc(d.Id, environment.InstF{d.Lin, d.Col, d.Id, d.Tipo})
 	//entorno
-	envFunc := environment.NewEnvironment(env.(environment.Environment), d.Id)
+	envFunc := environment.NewEnvironment(env.(environment.Environment), d.Id, d.Tipo)
 	envFunc.Size["size"] = envFunc.Size["size"] + 1
+	returnlb := gen.NewLabel()
+	envFunc.ReturnLbl = returnlb
+
 	//variables
 	for _, s := range d.Parametros {
 		res := s.(interfaces.Instruction).Ejecutar(ast, env, gen)
@@ -132,6 +137,7 @@ func (d DeclarationFunc) Ejecutar(ast *environment.AST, env interface{}, gen *ge
 			}
 		}
 	}
+	gen.AddLabel(returnlb)
 	gen.AddEnd()
 	gen.SetMainFlag(true)
 	return nil

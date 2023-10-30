@@ -4,7 +4,7 @@ print("----------14 pts----------");
 print("--------------------------");
 
 print("");
-func suma(_ numero1: Int, _ numero2: Int) -> Int {
+func suma( _ numero1: Int, _ numero2: Int) -> Int {
     let resultado = numero1 + numero2
     return resultado
 }

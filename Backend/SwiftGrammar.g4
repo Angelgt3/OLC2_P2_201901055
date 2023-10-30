@@ -280,7 +280,7 @@ expr returns [interfaces.Expression e]
 | listAceso                                                 { $e = expressions.NewArray($CORIZQ.line, $CORIZQ.pos, $listAceso.l) }
 | ID PARIZQ listStructExp PARDER                            { $e = expressions.NewStructExp($ID.line, $ID.pos, $ID.text, $listStructExp.l ) }
 //Funcion
-| funcallestmt                                              { $e = $funcallestmt.cefun }
+| funcallestmt PCOMA                                        { $e = $funcallestmt.cefun }
 ;
 
 //EXPRESIONES PRIMITIVAS

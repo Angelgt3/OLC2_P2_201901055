@@ -80,7 +80,7 @@ func ejecutar_analizador(code string) string {
 	//create ast
 	var Ast environment.AST
 	//ejecución
-	var globalenvioment environment.Environment = environment.NewEnvironment(nil, "GLOBAL")
+	var globalenvioment environment.Environment = environment.NewEnvironment(nil, "GLOBAL", environment.NULL)
 	//create generator
 	var Generator generator.Generator
 	Generator = generator.NewGenerator()

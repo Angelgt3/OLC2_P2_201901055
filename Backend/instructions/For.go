@@ -27,7 +27,7 @@ func (p ForRange) Ejecutar(ast *environment.AST, env interface{}, gen *generator
 	gen.AddComment("INICIO FOR")
 	//entorno FOR
 	var envfor environment.Environment
-	envfor = environment.NewEnvironment(env.(environment.Environment), "FOR")
+	envfor = environment.NewEnvironment(env.(environment.Environment), "FOR", environment.NULL)
 	envfor.Size["size"] = envfor.Size["size"] + 1
 
 	var condicion1, condicion2, result environment.Value

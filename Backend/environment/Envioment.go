@@ -3,18 +3,26 @@ package environment
 import "fmt"
 
 type Environment struct {
-	Anterior       interface{}
-	Tabla_variable map[string]Symbol
-	Id             string
-	Size           map[string]int
+	Anterior        interface{}
+	Tabla_variable  map[string]Symbol
+	Tabla_funciones map[string]InstF
+	Id              string
+	Size            map[string]int
+	BreakLbl        string
+	ContinueLbl     string
+	ReturnLbl       string
 }
 
-func NewEnvironment(ant interface{}, id string) Environment {
+func NewEnvironment(ant interface{}, id string, tipo TipoExpresion) Environment {
 	env := Environment{
-		Anterior:       ant,
-		Tabla_variable: make(map[string]Symbol),
-		Id:             id,
-		Size:           make(map[string]int),
+		Anterior:        ant,
+		Tabla_variable:  make(map[string]Symbol),
+		Tabla_funciones: make(map[string]InstF),
+		Id:              id,
+		Size:            make(map[string]int),
+		BreakLbl:        "",
+		ContinueLbl:     "",
+		ReturnLbl:       "",
 	}
 	env.Size["size"] = 0
 	return env
@@ -82,12 +90,29 @@ func (env Environment) SetVariable(id string, value Symbol) Symbol {
 }
 
 func (env Environment) SaveFunc(id string, value InstF) {
-
+	if variable, ok := env.Tabla_variable[id]; ok {
+		fmt.Println("La variable "+id+" ya existe", variable)
+		return
+	}
+	env.Tabla_funciones[id] = value
 }
 
 func (env Environment) GetFunc(id string) InstF {
+	var tmpEnv Environment
+	tmpEnv = env
+	for {
+		if funcion, ok := tmpEnv.Tabla_funciones[id]; ok {
+			return funcion
+		}
+		if tmpEnv.Anterior == nil {
+			break
+		} else {
+			tmpEnv = tmpEnv.Anterior.(Environment)
+		}
+	}
+	fmt.Println("La funcion", id, " no existe")
+	return InstF{0, 0, "", NULL}
 
-	return InstF{0, 0, "", NULL, nil, nil}
 }
 
 func (env Environment) SaveStruct(id string, list []interface{}) {

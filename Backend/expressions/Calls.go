@@ -63,8 +63,8 @@ func (c FunCallE) Ejecutar(ast *environment.AST, env interface{}, gen *generator
 	var result environment.Value
 	size := env.(environment.Environment).Size["size"]
 	gen.AddComment("Llamando Funcion")
+	tmp1 := gen.NewTemp()
 	if len(c.Parametros) > 0 {
-		tmp1 := gen.NewTemp()
 		gen.AddExpression(tmp1, "P", strconv.Itoa(size+1), "+")
 		for i := 0; i < len(c.Parametros); i++ { //recorrer la lista de parametros
 			if strings.Contains(fmt.Sprintf("%T", c.Parametros[i]), "expressions") { //ejecuta la expresion
@@ -81,12 +81,18 @@ func (c FunCallE) Ejecutar(ast *environment.AST, env interface{}, gen *generator
 		gen.AddGetStack(tmp1, "(int)P")
 		gen.AddExpression("P", "P", strconv.Itoa(size), "-")
 	} else {
-		tmp1 := gen.NewTemp()
 		gen.AddExpression("P", "P", strconv.Itoa(size), "+")
 		gen.AddCall(c.Id)
 		gen.AddGetStack(tmp1, "(int)P")
 		gen.AddExpression("P", "P", strconv.Itoa(size), "-")
 	}
+
+	funcion := env.(environment.Environment).GetFunc(c.Id)
+	result.Type = funcion.Tipo
+	result.Value = tmp1
+	result.IsTemp = true
+
 	gen.AddComment("Final de llamada funcion")
+
 	return result
 }

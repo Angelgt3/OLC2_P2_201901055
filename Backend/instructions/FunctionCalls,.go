@@ -24,7 +24,7 @@ func NewFunCall(lin int, col int, id string, parametros []interface{}) FunCall {
 func (fc FunCall) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 	var result environment.Value
 	size := env.(environment.Environment).Size["size"]
-	gen.AddComment("Inicio Llamando Funcion (expresion)")
+	gen.AddComment("Inicio Llamando Funcion (instruccion)")
 	if len(fc.Parametros) > 0 {
 		tmp1 := gen.NewTemp()
 		gen.AddExpression(tmp1, "P", strconv.Itoa(size+1), "+")
@@ -49,6 +49,6 @@ func (fc FunCall) Ejecutar(ast *environment.AST, env interface{}, gen *generator
 		gen.AddGetStack(tmp1, "(int)P")
 		gen.AddExpression("P", "P", strconv.Itoa(size), "-")
 	}
-	gen.AddComment("Final de llamada funcion (expreision)")
+	gen.AddComment("Final de llamada funcion (instruccion)")
 	return result
 }
