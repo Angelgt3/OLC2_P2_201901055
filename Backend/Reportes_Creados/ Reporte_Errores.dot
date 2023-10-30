@@ -1,0 +1,11 @@
+digraph Errores{ 
+node [ shape=none fontname=Helvetica] 
+n1 [ label = <<table><tr> 
+<td colspan="2" bgcolor="#ccccff">No</td>
+<td colspan="2" bgcolor="#ccccff">Descripcio</td>
+<td colspan="2" bgcolor="#ccccff">Ambito</td>
+<td colspan="2" bgcolor="#ccccff">Linea</td>
+<td colspan="2" bgcolor="#ccccff">Columna</td>
+</tr>
+</table> > ]; 
+ }

@@ -4,7 +4,6 @@ import (
 	"Backend/environment"
 	"Backend/generator"
 	"Backend/interfaces"
-	"fmt"
 	"strconv"
 )
 
@@ -25,7 +24,7 @@ func (p Assigment) Ejecutar(ast *environment.AST, env interface{}, gen *generato
 	gen.AddComment("Generando asignacion")
 	variable := env.(environment.Environment).GetVariable(p.Id)
 	if !variable.Mutable {
-		fmt.Println("La variable es inmutable")
+		ast.SetError("La variable es inmutable", p.Col, p.Lin, env.(environment.Environment).GetEntorno())
 		return result
 	}
 	result = p.Expresion.Ejecutar(ast, env, gen)

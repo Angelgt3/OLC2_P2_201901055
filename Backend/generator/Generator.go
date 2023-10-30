@@ -26,7 +26,7 @@ func NewGenerator() Generator {
 		BreakLabel:         "",
 		ContinueLabel:      "",
 		PrintStringFlag:    true,
-		NativetoStringFlag: false,
+		NativetoStringFlag: true,
 		MainCode:           true,
 	}
 	return generator
@@ -134,38 +134,68 @@ func (g *Generator) AddPrintf(typePrint string, value string) {
 }
 
 func (g *Generator) PrintMathError() {
-	g.AddPrintf("c", "77")
-	g.AddPrintf("c", "97")
-	g.AddPrintf("c", "116")
-	g.AddPrintf("c", "104")
-	g.AddPrintf("c", "69")
-	g.AddPrintf("c", "114")
-	g.AddPrintf("c", "114")
-	g.AddPrintf("c", "111")
-	g.AddPrintf("c", "114")
+	g.AddPrintf("c", "77")  //M
+	g.AddPrintf("c", "97")  //a
+	g.AddPrintf("c", "116") //t
+	g.AddPrintf("c", "104") //h
+	g.AddPrintf("c", "69")  //E
+	g.AddPrintf("c", "114") //r
+	g.AddPrintf("c", "114") //r
+	g.AddPrintf("c", "111") //o
+	g.AddPrintf("c", "114") //r
 	g.AddPrintf("c", "10")
 }
 
 func (g *Generator) PrintNil() {
-	g.AddPrintf("c", "110")
-	g.AddPrintf("c", "105")
-	g.AddPrintf("c", "108")
+	g.AddPrintf("c", "110") //N
+	g.AddPrintf("c", "105") //i
+	g.AddPrintf("c", "108") //l
+	g.AddPrintf("c", "10")
+}
+
+/*
+	func (g *Generator) PrintOutIndex() {
+		g.AddPrintf("c", "79")
+		g.AddPrintf("c", "117")
+		g.AddPrintf("c", "116")
+		g.AddPrintf("c", "79")
+		g.AddPrintf("c", "102")
+		g.AddPrintf("c", "73")
+		g.AddPrintf("c", "110")
+		g.AddPrintf("c", "100")
+		g.AddPrintf("c", "101")
+		g.AddPrintf("c", "120")
+		g.AddPrintf("c", "10")
+	}
+*/
+func (g *Generator) PrintOutIndex() {
+	g.AddPrintf("%c", "66")  //B
+	g.AddPrintf("%c", "111") //o
+	g.AddPrintf("%c", "117") //u
+	g.AddPrintf("%c", "110") //n
+	g.AddPrintf("%c", "100") //d
+	g.AddPrintf("%c", "115") //s
+	g.AddPrintf("%c", "69")  //E
+	g.AddPrintf("%c", "114") //r
+	g.AddPrintf("%c", "114") //r
+	g.AddPrintf("%c", "111") //o
+	g.AddPrintf("%c", "114") //r
 	g.AddPrintf("c", "10")
 }
 
 func (g *Generator) PrintTrue() {
-	g.AddPrintf("c", "116")
-	g.AddPrintf("c", "114")
-	g.AddPrintf("c", "117")
-	g.AddPrintf("c", "101")
+	g.AddPrintf("c", "84")  //T
+	g.AddPrintf("c", "114") //r
+	g.AddPrintf("c", "117") //u
+	g.AddPrintf("c", "101") //e
 }
 
 func (g *Generator) PrintFalse() {
-	g.AddPrintf("c", "102")
-	g.AddPrintf("c", "97")
-	g.AddPrintf("c", "108")
-	g.AddPrintf("c", "115")
-	g.AddPrintf("c", "101")
+	g.AddPrintf("c", "70")  //F
+	g.AddPrintf("c", "97")  //a
+	g.AddPrintf("c", "108") //l
+	g.AddPrintf("c", "115") //s
+	g.AddPrintf("c", "101") //e
 }
 
 ////////
@@ -334,5 +364,57 @@ func (g *Generator) NativePrintString() {
 		g.Natives = append(g.Natives, "\treturn;\n")
 		g.Natives = append(g.Natives, "}\n\n")
 		g.PrintStringFlag = false
+	}
+}
+
+func (g *Generator) NativeFloatToString() {
+	if g.NativetoStringFlag {
+		//generando temporales y etiquetas
+		t0 := g.NewTemp()
+		t1 := g.NewTemp()
+		t2 := g.NewTemp()
+		t3 := g.NewTemp()
+		t4 := g.NewTemp()
+
+		L0 := g.NewLabel()
+		L1 := g.NewLabel()
+		L2 := g.NewLabel()
+
+		g.Natives = append(g.Natives, "void FloatString() {\n")
+		g.Natives = append(g.Natives, "heap[(int)H] = -1;\n")
+		g.Natives = append(g.Natives, "H = H + 1;\n")
+		g.Natives = append(g.Natives, t0+" = P + 1;\n")
+		g.Natives = append(g.Natives, t1+" = stack[(int)"+t0+"];\n")
+		g.Natives = append(g.Natives, "if ( "+t1+" >= 0 ) goto "+L0+";\n")
+		g.Natives = append(g.Natives, t1+" = 0 - "+t1+";\n")
+		g.Natives = append(g.Natives, L0+": \n")
+		g.Natives = append(g.Natives, t2+" = (int)"+t1+"% 10;\n")
+		g.Natives = append(g.Natives, t2+" = "+t2+" + 48;\n")
+		g.Natives = append(g.Natives, t1+" = "+t1+" / 10;\n")
+		g.Natives = append(g.Natives, t4+" = (int)"+t1+" % 1;\n")
+		g.Natives = append(g.Natives, "heap[(int)H]="+t2+";\n")
+		g.Natives = append(g.Natives, "H = H + 1;\n")
+		g.Natives = append(g.Natives, "if ( "+t1+" != 0 ) goto "+L0+";\n")
+		g.Natives = append(g.Natives, t3+" = H;\n")
+		g.Natives = append(g.Natives, t0+" = P + 1;\n")
+		g.Natives = append(g.Natives, t1+" = stack[(int)"+t0+"];\n")
+		g.Natives = append(g.Natives, "if ( "+t1+" >= 0 ) goto "+L1+";\n")
+		g.Natives = append(g.Natives, "H=heap[(int)45];\n")
+		g.Natives = append(g.Natives, "H = H + 1;\n")
+		g.Natives = append(g.Natives, L1+": \n")
+		g.Natives = append(g.Natives, t0+" = "+t3+";\n")
+		g.Natives = append(g.Natives, L2+": \n")
+		g.Natives = append(g.Natives, t0+" = "+t0+" + 1;\n")
+		g.Natives = append(g.Natives, t2+" =heap[(int)"+t0+"];\n")
+		g.Natives = append(g.Natives, "heap[(int)H]="+t2+";\n")
+		g.Natives = append(g.Natives, "H = H + 1;\n")
+		g.Natives = append(g.Natives, "if ( "+t2+" != -1 ) goto "+L2+";\n")
+		g.Natives = append(g.Natives, "stack[(int)P]="+t3+";\n")
+		g.Natives = append(g.Natives, "\treturn;\n")
+		g.Natives = append(g.Natives, "}\n\n")
+
+		//se genera la funcion FloatString
+
+		g.NativetoStringFlag = false
 	}
 }

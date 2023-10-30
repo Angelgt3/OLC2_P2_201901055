@@ -1,6 +1,7 @@
 package main
 
 import (
+	reports "Backend/Reports"
 	"Backend/environment"
 	"Backend/generator"
 	"Backend/interfaces"
@@ -106,6 +107,8 @@ func ejecutar_analizador(code string) string {
 	} else {
 		//ConsoleOut = Ast.GetErrors()
 	}
+	reports.Rts(Ast)
+	reports.RErrors(Ast)
 	return string(ConsoleOut)
 }
 

@@ -24,36 +24,42 @@ func NewDeclaration(lin int, col int, id string, tipo environment.TipoExpresion,
 	return instr
 }
 
-func (p Declaration) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
+func (d Declaration) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 	var newVar environment.Symbol
-	result := p.Expresion.Ejecutar(ast, env, gen)
+	result := d.Expresion.Ejecutar(ast, env, gen)
+
 	// var valor : string ? | variable con tipo sin valor | para eso nomas
-	if result.Type == environment.NULL && p.Tipo != environment.NULL {
-		result.Type = p.Tipo
+	if result.Type == environment.NULL && d.Tipo != environment.NULL {
+		result.Type = d.Tipo
 	}
 	//casteo
 	//float | int -> float  | unicamente
-	if p.Tipo == environment.FLOAT && result.Type == environment.INTEGER {
+	if d.Tipo == environment.FLOAT && result.Type == environment.INTEGER {
 		// Convertir el int a float64
 		result.Type = environment.FLOAT
 	}
 	//validar tipos
 	if result.Type == environment.ARRAY {
-		if p.ArrayValidation(ast, env, result) { //para array
-
-		} else if p.MatrizValidation(ast, env, result) { //para matriz
-
+		if d.ArrayValidation(ast, env, result) { //para array
+			gen.AddComment("Agregando una declaracion array")
+			result.Type = d.Tipo
+			newVar = env.(environment.Environment).SaveVariable(d.Id, d.changeable, result.Type)
+			ast.SetRs(d.Id, "vector", result.Type, env.(environment.Environment).GetEntorno(), d.Lin, d.Col)
+		} else if d.MatrizValidation(ast, env, result) { //para matriz
+			gen.AddComment("Agregando una declaracion array")
+			result.Type = d.Tipo
+			newVar = env.(environment.Environment).SaveVariable(d.Id, d.changeable, result.Type)
+			ast.SetRs(d.Id, "matriz", result.Type, env.(environment.Environment).GetEntorno(), d.Lin, d.Col)
 		} else {
-			//ast.SetError("La estructura del array es incorrecta", p.Col, p.Lin, env.(environment.Environment).GetEntorno())
+			ast.SetError("La estructura del array es incorrecta", d.Col, d.Lin, env.(environment.Environment).GetEntorno())
 		}
 		// variable con el mismo tipo y valor || variable sin tipo asignado pero con valor
-	} else if result.Type == p.Tipo || (result.Type != p.Tipo && p.Tipo == environment.NULL) {
+	} else if result.Type == d.Tipo || (result.Type != d.Tipo && d.Tipo == environment.NULL) {
 		gen.AddComment("Agregando una declaracion variable")
-		newVar = env.(environment.Environment).SaveVariable(p.Id, p.changeable, result.Type)
-		//ast.SetRs(p.Id, "variable", result.Tipo, env.(environment.Environment).GetEntorno(), p.Lin, p.Col)
+		newVar = env.(environment.Environment).SaveVariable(d.Id, d.changeable, result.Type)
+		ast.SetRs(d.Id, "variable", result.Type, env.(environment.Environment).GetEntorno(), d.Lin, d.Col)
 	} else {
-
-		//ast.SetError("Los tipos de datos son incorrectos", p.Col, p.Lin, env.(environment.Environment).GetEntorno())
+		ast.SetError("Los tipos de datos son incorrectos para realizar la declaracion", d.Col, d.Lin, env.(environment.Environment).GetEntorno())
 	}
 
 	if result.Type == environment.BOOLEAN {
@@ -96,22 +102,22 @@ func NewDeclarationFunc(lin int, col int, id string, tipo environment.TipoExpres
 	return instr
 }
 
-func (p DeclarationFunc) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
+func (d DeclarationFunc) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 	var result environment.Value
 	gen.SetMainFlag(false)
-	gen.AddComment("FUNCION " + p.Id)
-	gen.AddTittle(p.Id)
+	gen.AddComment("FUNCION " + d.Id)
+	gen.AddTittle(d.Id)
 	//entorno
-	var envFunc environment.Environment
-	envFunc = environment.NewEnvironment(env.(environment.Environment), p.Id)
+	envFunc := environment.NewEnvironment(env.(environment.Environment), d.Id)
 	envFunc.Size["size"] = envFunc.Size["size"] + 1
 	//variables
-	for _, s := range p.Parametros {
+	for _, s := range d.Parametros {
 		res := s.(interfaces.Instruction).Ejecutar(ast, env, gen)
 		envFunc.SaveVariable(res.(environment.Value).Value, true, res.(environment.Value).Type)
+		ast.SetRs(d.Id, "variable", result.Type, env.(environment.Environment).GetEntorno(), d.Lin, d.Col)
 	}
 	//instrucciones funcion
-	for _, s := range p.Bloque {
+	for _, s := range d.Bloque {
 		if strings.Contains(fmt.Sprintf("%T", s), "instructions") {
 			resInst := s.(interfaces.Instruction).Ejecutar(ast, envFunc, gen)
 			if resInst != nil {
@@ -124,8 +130,6 @@ func (p DeclarationFunc) Ejecutar(ast *environment.AST, env interface{}, gen *ge
 			for _, lvl := range result.OutLabel {
 				gen.AddLabel(lvl.(string))
 			}
-		} else {
-			fmt.Println("Error en bloque")
 		}
 	}
 	gen.AddEnd()
@@ -146,18 +150,18 @@ func NewStruct(lin int, col int, id string, list []interface{}) Struct {
 	return instr
 }
 
-func (p Struct) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
-	env.(environment.Environment).SaveStruct(p.Id, p.ListAtr)
+func (d Struct) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
+	env.(environment.Environment).SaveStruct(d.Id, d.ListAtr)
 	return nil
 }
 
-func (p Declaration) ArrayValidation(ast *environment.AST, env interface{}, result environment.Value) bool {
-	//validaciones de array
+func (d Declaration) ArrayValidation(ast *environment.AST, env interface{}, result environment.Value) bool {
+	//validaciones de vector
 
-	return false
+	return true
 }
-func (p Declaration) MatrizValidation(ast *environment.AST, env interface{}, result environment.Value) bool {
+func (d Declaration) MatrizValidation(ast *environment.AST, env interface{}, result environment.Value) bool {
 	//validaciones de matriz
 
-	return false
+	return true
 }

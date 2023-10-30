@@ -1,0 +1,12 @@
+digraph TS{ 
+node [ shape=none fontname=Helvetica] 
+n1 [ label = <<table><tr> 
+<td colspan="2" bgcolor="#ccccff">Id</td>
+<td colspan="2" bgcolor="#ccccff">Tipo símbolo</td>
+<td colspan="2" bgcolor="#ccccff">Tipo dato</td>
+<td colspan="2" bgcolor="#ccccff">Ámbito</td>
+<td colspan="2" bgcolor="#ccccff">Línea </td>
+<td colspan="2" bgcolor="#ccccff">Columna</td>
+</tr>
+</table> > ]; 
+ }

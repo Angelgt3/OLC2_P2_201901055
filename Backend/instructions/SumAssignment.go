@@ -4,6 +4,7 @@ import (
 	"Backend/environment"
 	"Backend/generator"
 	"Backend/interfaces"
+	"strconv"
 )
 
 type SumAssigment struct {
@@ -19,6 +20,36 @@ func NewSumAssigment(lin int, col int, id string, val interfaces.Expression) Sum
 }
 
 func (p SumAssigment) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
+	//Traer simbolo
+	var result environment.Value
+	result = p.Expresion.Ejecutar(ast, env, gen)
 
-	return nil
+	//Obtengo la variable
+	variable := env.(environment.Environment).GetVariable(p.Id)
+
+	//hago la operacion
+	if variable.Tipo == environment.FLOAT && result.Type == environment.FLOAT {
+		variable.Tipo = environment.FLOAT
+	} else if variable.Tipo == environment.FLOAT && result.Type == environment.INTEGER {
+		variable.Tipo = environment.FLOAT
+	} else if variable.Tipo == environment.INTEGER && result.Type == environment.INTEGER {
+		variable.Tipo = environment.INTEGER
+		/*} else if variable.Tipo == environment.STRING && result.Tipo == environment.STRING {
+		result.Valor = strconv.Itoa(variable.Valor.(int)) + strconv.Itoa(result.Valor.(int))
+		result.Tipo = environment.STRING
+		*/
+	} else {
+		ast.SetError("No se puedo realizar la suma", p.Col, p.Lin, env.(environment.Environment).GetEntorno())
+		return result
+	}
+	gen.AddComment("INCREMENTO")
+	//modificar la variable si se puede
+	newTemp := gen.NewTemp()
+	gen.AddGetStack(newTemp, strconv.Itoa(variable.Posicion))
+	gen.AddExpression(newTemp, newTemp, result.Value, "+") //suma
+	//result.IntValue =  + result.IntValue
+	gen.AddSetStack(strconv.Itoa(variable.Posicion), newTemp)
+	gen.AddBr()
+
+	return result
 }

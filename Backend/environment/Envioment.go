@@ -20,6 +20,10 @@ func NewEnvironment(ant interface{}, id string) Environment {
 	return env
 }
 
+func (env Environment) GetSizeEntorno() string {
+	return string(env.Size["size"])
+}
+
 // obtengo entorno actual (string)
 func (env Environment) GetEntorno() string {
 	return env.Id

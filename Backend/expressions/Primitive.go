@@ -61,6 +61,8 @@ func (p Primitive) Ejecutar(ast *environment.AST, env interface{}, gen *generato
 	} else if p.Tipo == environment.NULL {
 		result = environment.NewValue(fmt.Sprintf("%v", nil), false, p.Tipo)
 		result.IntValue = -1
+	} else {
+		ast.SetError("Primitivo inreconocible", p.Col, p.Lin, env.(environment.Environment).GetEntorno())
 	}
 	return result
 }

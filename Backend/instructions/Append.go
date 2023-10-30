@@ -18,7 +18,10 @@ func NewAppend(lin int, col int, id string, val interfaces.Expression) Append {
 	return instr
 }
 
-func (p Append) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
+func (a Append) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
+	gen.AddComment("CREANDO APPEND")
 
-	return nil
+	var result environment.Value
+
+	return result
 }
