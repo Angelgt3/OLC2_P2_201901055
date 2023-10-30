@@ -118,8 +118,11 @@ func (d DeclarationFunc) Ejecutar(ast *environment.AST, env interface{}, gen *ge
 	//variables
 	for _, s := range d.Parametros {
 		res := s.(interfaces.Instruction).Ejecutar(ast, env, gen)
-		envFunc.SaveVariable(res.(environment.Value).Value, true, res.(environment.Value).Type)
-		ast.SetRs(d.Id, "variable", result.Type, env.(environment.Environment).GetEntorno(), d.Lin, d.Col)
+		if result, ok := res.(environment.Value); ok {
+			envFunc.SaveVariable(result.Value, true, result.Type)
+			ast.SetRs(d.Id, "variable", result.Type, env.(environment.Environment).GetEntorno(), d.Lin, d.Col)
+		}
+
 	}
 	//instrucciones funcion
 	for _, s := range d.Bloque {
