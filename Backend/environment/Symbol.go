@@ -26,18 +26,14 @@ type Value struct {
 	FalseLabel []interface{}
 	OutLabel   []interface{}
 	IntValue   int
-	Tbreak     bool
-	Tcontinue  bool
 }
 
 func NewValue(Val string, temp bool, typee TipoExpresion) Value {
 	result := Value{
-		Value:     Val,
-		IsTemp:    temp,
-		Type:      typee,
-		IntValue:  0,
-		Tbreak:    false,
-		Tcontinue: false,
+		Value:    Val,
+		IsTemp:   temp,
+		Type:     typee,
+		IntValue: 0,
 	}
 	return result
 }

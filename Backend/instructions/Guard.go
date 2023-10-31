@@ -42,19 +42,10 @@ func (p Guard) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Ge
 		if strings.Contains(fmt.Sprintf("%T", s), "instructions") {
 			respuesta := s.(interfaces.Instruction).Ejecutar(ast, env, gen)
 			if respuesta != nil {
-				if respuesta == "break" {
-					result.Tbreak = true
-					gen.AddGoto(newLabel)
-				} else if respuesta == "continue" {
-					result.Tcontinue = true
-					gen.AddGoto(newLabel)
-				} else {
-					//agregando etiquetas de salida
-					for _, lvl := range respuesta.(environment.Value).OutLabel {
-						OutLvls = append(OutLvls, lvl)
-					}
+				//agregando etiquetas de salida
+				for _, lvl := range respuesta.(environment.Value).OutLabel {
+					OutLvls = append(OutLvls, lvl)
 				}
-
 			}
 		}
 	}

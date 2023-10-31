@@ -38,15 +38,6 @@ func (p While) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Ge
 		if strings.Contains(fmt.Sprintf("%T", s), "instructions") {
 			respuesta := s.(interfaces.Instruction).Ejecutar(ast, env, gen)
 			if respuesta != nil {
-				if transeferencia, ok := respuesta.(environment.Value); ok {
-					if transeferencia.Tcontinue {
-						transeferencia.Tcontinue = false
-						gen.AddGoto(inicio)
-					} else if transeferencia.Tbreak {
-						transeferencia.Tbreak = false
-						gen.AddGoto(newLabel)
-					}
-				}
 				for _, lvl := range respuesta.(environment.Value).OutLabel {
 					OutLvls = append(OutLvls, lvl)
 				}

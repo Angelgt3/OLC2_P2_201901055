@@ -45,9 +45,11 @@ func (p ForRange) Ejecutar(ast *environment.AST, env interface{}, gen *generator
 	inicio := gen.NewLabel()
 	gen.AddLabel(inicio)
 	newLabel := gen.NewLabel()
-
 	trueLabel := gen.NewLabel()
 	falseLabel := gen.NewLabel()
+	envfor.ContinueLbl = inicio
+	envfor.BreakLbl = falseLabel
+
 	//actualizacion de variables
 	variable := envfor.GetVariable(p.Id)                                               //variable
 	newvalue := environment.NewValue(fmt.Sprintf("%v", 1), false, environment.INTEGER) // 1
@@ -65,15 +67,6 @@ func (p ForRange) Ejecutar(ast *environment.AST, env interface{}, gen *generator
 		if strings.Contains(fmt.Sprintf("%T", s), "instructions") {
 			respuesta := s.(interfaces.Instruction).Ejecutar(ast, envfor, gen)
 			if respuesta != nil {
-				if transeferencia, ok := respuesta.(environment.Value); ok {
-					if transeferencia.Tcontinue {
-						transeferencia.Tcontinue = false
-						gen.AddGoto(inicio)
-					} else if transeferencia.Tbreak {
-						transeferencia.Tbreak = false
-						gen.AddGoto(falseLabel)
-					}
-				}
 				//agregando etiquetas de salida
 				for _, lvl := range respuesta.(environment.Value).OutLabel {
 					OutLvls = append(OutLvls, lvl)

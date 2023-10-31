@@ -17,8 +17,14 @@ func NewBreak(lin int, col int) Break {
 	return Instr
 }
 
-func (p Break) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
-	return "break"
+func (b Break) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
+	var result environment.Value
+	if env.(environment.Environment).BreakLbl == "" || env.(environment.Environment).BreakLbl == "global" {
+		fmt.Println("Break fuera de un ciclo")
+		return result
+	}
+	gen.AddGoto(env.(environment.Environment).BreakLbl)
+	return result
 }
 
 type Continue struct {
@@ -31,8 +37,14 @@ func NewContinue(lin int, col int) Continue {
 	return Instr
 }
 
-func (p Continue) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
-	return "continue"
+func (c Continue) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
+	var result environment.Value
+	if env.(environment.Environment).ContinueLbl == "" || env.(environment.Environment).ContinueLbl == "global" {
+		fmt.Println("Continue fuera de un ciclo")
+		return result
+	}
+	gen.AddGoto(env.(environment.Environment).ContinueLbl)
+	return result
 }
 
 type Return struct {
@@ -48,7 +60,7 @@ func NewReturn(lin int, col int, expr interfaces.Expression) Return {
 
 func (r Return) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 	var result environment.Value
-	if env.(environment.Environment).ReturnLbl == "" {
+	if env.(environment.Environment).ReturnLbl == "" || env.(environment.Environment).ReturnLbl == "global" {
 		fmt.Println("Return fuera de funcion")
 		return result
 	}
