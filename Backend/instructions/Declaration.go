@@ -111,7 +111,7 @@ func (d DeclarationFunc) Ejecutar(ast *environment.AST, env interface{}, gen *ge
 	env.(environment.Environment).SaveFunc(d.Id, environment.InstF{d.Lin, d.Col, d.Id, d.Tipo})
 	//entorno
 	envFunc := environment.NewEnvironment(env.(environment.Environment), d.Id, d.Tipo)
-	envFunc.Size["size"] = envFunc.Size["size"] + 1
+	envFunc.Size["size"] = env.(environment.Environment).Size["size"] + 1
 	returnlb := gen.NewLabel()
 	envFunc.ReturnLbl = returnlb
 

@@ -8,5 +8,17 @@ n1 [ label = <<table><tr>
 <td colspan="2" bgcolor="#ccccff">Línea </td>
 <td colspan="2" bgcolor="#ccccff">Columna</td>
 </tr>
+<tr><td colspan="2" bgcolor="#ccccff">duplicar</td>
+<td colspan="2" bgcolor="#ccccff">variable</td>
+<td colspan="2" bgcolor="#ccccff">Int</td>
+<td colspan="2" bgcolor="#ccccff">GLOBAL</td>
+<td colspan="2" bgcolor="#ccccff">2</td>
+<td colspan="2" bgcolor="#ccccff">0</td></tr>
+<tr><td colspan="2" bgcolor="#ccccff">numero1</td>
+<td colspan="2" bgcolor="#ccccff">variable</td>
+<td colspan="2" bgcolor="#ccccff">Int</td>
+<td colspan="2" bgcolor="#ccccff">GLOBAL</td>
+<td colspan="2" bgcolor="#ccccff">6</td>
+<td colspan="2" bgcolor="#ccccff">0</td></tr>
 </table> > ]; 
  }

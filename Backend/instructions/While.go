@@ -22,12 +22,20 @@ func NewWhile(lin int, col int, condition interfaces.Expression, bloque []interf
 
 func (p While) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
 	gen.AddComment("INCIO WHILE")
+	//entorno while
+	var envwhile environment.Environment
+	envwhile = environment.NewEnvironment(env.(environment.Environment), "WHILE", environment.NULL)
+	envwhile.Size["size"] = env.(environment.Environment).Size["size"] + 1
+
 	var condicion, result environment.Value
 	var OutLvls []interface{}
 	inicio := gen.NewLabel()
 	gen.AddLabel(inicio)
-	condicion = p.Expresion.Ejecutar(ast, env, gen)
+	condicion = p.Expresion.Ejecutar(ast, envwhile, gen)
 	newLabel := gen.NewLabel()
+	salida := gen.NewLabel()
+	envwhile.ContinueLbl = inicio
+	envwhile.BreakLbl = salida
 
 	//add true labels
 	for _, lvl := range condicion.TrueLabel {
@@ -36,7 +44,7 @@ func (p While) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Ge
 	//instrucciones
 	for _, s := range p.Bloque {
 		if strings.Contains(fmt.Sprintf("%T", s), "instructions") {
-			respuesta := s.(interfaces.Instruction).Ejecutar(ast, env, gen)
+			respuesta := s.(interfaces.Instruction).Ejecutar(ast, envwhile, gen)
 			if respuesta != nil {
 				for _, lvl := range respuesta.(environment.Value).OutLabel {
 					OutLvls = append(OutLvls, lvl)
@@ -56,8 +64,9 @@ func (p While) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Ge
 	for i, item := range OutLvls {
 		copiedSlice[i] = item
 	}
-
 	result.OutLabel = copiedSlice
+
+	gen.AddLabel(salida)
 	gen.AddComment("FIN WHILE")
 	return result
 }

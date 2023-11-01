@@ -4,6 +4,7 @@ import (
 	"Backend/environment"
 	"Backend/generator"
 	"Backend/interfaces"
+	"strconv"
 )
 
 type BinaryOperation struct {
@@ -48,6 +49,24 @@ func (operacion BinaryOperation) Ejecutar(ast *environment.AST, env interface{},
 			}
 			result = environment.NewValue(newTemp, true, dominante)
 			result.IntValue = op1.IntValue + op2.IntValue
+			return result
+		} else if operacion.Operador == "+" && dominante == environment.STRING {
+			gen.NativeConcatString()
+			//concat
+			envSize := strconv.Itoa(env.(environment.Environment).Size["size"])
+			tmp1 := gen.NewTemp()
+			tmp2 := gen.NewTemp()
+			gen.AddExpression(tmp1, "P", envSize, "+")
+			gen.AddExpression(tmp1, tmp1, "1", "+")
+			gen.AddSetStack("(int)"+tmp1, op1.Value)
+			gen.AddExpression(tmp1, tmp1, "1", "+")
+			gen.AddSetStack("(int)"+tmp1, op2.Value)
+			gen.AddExpression("P", "P", envSize, "+")
+			gen.AddCall("dbrust_concatString")
+			gen.AddGetStack(tmp2, "(int)P")
+			gen.AddExpression("P", "P", envSize, "-")
+			gen.AddBr()
+			result = environment.NewValue(tmp2, true, dominante)
 			return result
 		} else {
 			ast.SetError(" No es posible realizar la operacion '"+operacion.Operador+"'", operacion.Col, operacion.Lin, env.(environment.Environment).GetEntorno())

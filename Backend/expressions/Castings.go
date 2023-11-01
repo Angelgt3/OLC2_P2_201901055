@@ -36,7 +36,6 @@ func NewCastingFloat(lin int, col int, val interfaces.Expression) CastingFloat {
 
 func (p CastingFloat) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) environment.Value {
 	result := p.Expresion.Ejecutar(ast, env, gen)
-	result.Type = environment.FLOAT
 	return result
 }
 
@@ -63,24 +62,5 @@ func (p CastingString) Ejecutar(ast *environment.AST, env interface{}, gen *gene
 	temp := gen.NewTemp()
 	gen.AddGetStack(temp, "P")
 
-	/*
-		# SE CREA LA TEMP PARA GUARDAR EL ENTORNO
-		paramTemp = generator.addTemp()
-		# SE CAMBIA DE ENTORNO PARCIAL
-		generator.addComment("Empieza el envio de parametros")
-		generator.addExp(paramTemp, 'P', env.size + 1, '+')
-		#SE EMPIEZA A MANDAR LOS PARAMETROS
-		generator.setStack(paramTemp, valor.val)
-		generator.addComment("termina  el envio de parametros")
-		# SE CAMBIA DE ENTRONO DEVERITAS
-		generator.newEnv(env.size)
-		generator.callFun('toString')
-		# SE CREA TEMP PARA GUARDAR EL RET
-		temp = generator.addTemp()
-		generator.getStack(temp, 'P')
-		# SE REGRESA AL ENTORNO
-		generator.retEnv(env.size)
-		return Return(temp, Type.STRING, True)
-	*/
 	return result
 }

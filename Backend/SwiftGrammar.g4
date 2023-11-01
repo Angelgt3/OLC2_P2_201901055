@@ -109,7 +109,6 @@ listParamsFunc returns[[]interface{} lpf]
     }
 | id1=(ID|GBAJO)? id2=ID DOSP INOUT? typestmt {
     $lpf = []interface{}{}
-    
     newParam := instructions.NewParamsDeclaration($id2.line, $id2.pos, $id1.text,$id2.text,$INOUT.text, $typestmt.type)
     $lpf = append($lpf, newParam)
     }
@@ -318,16 +317,27 @@ primitives returns [interfaces.Expression p]
 
 //  LISTA DE PARAMETROS
 listParams returns[[]interface{} l]
-: list=listParams COMA expr 
+: list=listParams COMA AMP? expr 
 {
     var arr []interface{}
     arr = append($list.l, $expr.e)
     $l = arr
 }   
-| expr 
+| AMP? expr 
 {
     $l = []interface{}{}
     $l = append($l, $expr.e)
+}
+| list=listParams COMA expr DOSP AMP? id=expr
+{
+    var arr []interface{}
+    arr = append($list.l, $id.e)
+    $l = arr
+}   
+| expr PCOMA AMP? id=expr
+{
+    $l = []interface{}{}
+    $l = append($l, $id.e)
 }
 ;
 

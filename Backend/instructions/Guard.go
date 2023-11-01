@@ -26,12 +26,13 @@ func (p Guard) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Ge
 	var OutLvls []interface{}
 	condicion = p.Expresion.Ejecutar(ast, env, gen)
 	newLabel := gen.NewLabel()
+	salida := gen.NewLabel()
 	//add true labels
 	for _, lvl := range condicion.TrueLabel {
 		gen.AddLabel(lvl.(string))
 	}
 	//add out labels
-	gen.AddGoto(newLabel)
+	gen.AddGoto(salida)
 	//add false labels
 	for _, lvl := range condicion.FalseLabel {
 		gen.AddLabel(lvl.(string))
@@ -55,6 +56,7 @@ func (p Guard) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Ge
 		copiedSlice[i] = item
 	}
 	result.OutLabel = copiedSlice
+	gen.AddLabel(salida)
 	gen.AddComment("FIN GUARD")
 	return result
 }

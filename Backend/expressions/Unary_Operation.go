@@ -32,6 +32,7 @@ func (operacion UnaryOperation) Ejecutar(ast *environment.AST, env interface{}, 
 		}
 	} else if operacion.Operador == "-" {
 		newTemp := gen.NewTemp()
+		op1 = operacion.Op_der.Ejecutar(ast, env, gen)
 		if op1.Type == environment.INTEGER || op1.Type == environment.FLOAT {
 			gen.AddExpression(newTemp, op1.Value, "-1", "*")
 			result = environment.NewValue(newTemp, true, environment.FLOAT)
