@@ -9,7 +9,7 @@ func fibonacci(_ n: Int) -> Int {
     } else if n == 1 {
         return 1
     } else {
-        return fibonacci(n - 1) + fibonacci(n - 2)
+        return fibonacci(n - 1); + fibonacci(n - 2);
     }
 }
 
@@ -29,10 +29,13 @@ func Hanoi(_ discos: Int, _ origen: Int, _ auxiliar: Int, _ destino: Int) {
     }
 }
 
-print("")
-print("Factorial de 4: ", fibonacci(4))
-print("Factorial de 8: ", fibonacci(8))
-print("Factorial de 10: ", fibonacci(10))
+print("  ")
+print("Factorial de 4: ")
+print(fibonacci(4);)
+print("Factorial de 8: ")
+print(fibonacci(8);)
+print("Factorial de 10: ")
+print(fibonacci(10);)
 print("  ")
 print("Hanoi")
 Hanoi(3, 1, 2, 3)

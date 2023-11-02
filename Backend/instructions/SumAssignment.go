@@ -20,6 +20,7 @@ func NewSumAssigment(lin int, col int, id string, val interfaces.Expression) Sum
 }
 
 func (p SumAssigment) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
+	gen.AddComment("INICIO INCREMENTO")
 	//Traer simbolo
 	var result environment.Value
 	result = p.Expresion.Ejecutar(ast, env, gen)
@@ -42,13 +43,13 @@ func (p SumAssigment) Ejecutar(ast *environment.AST, env interface{}, gen *gener
 		ast.SetError("No se puedo realizar la suma", p.Col, p.Lin, env.(environment.Environment).GetEntorno())
 		return result
 	}
-	gen.AddComment("INCREMENTO")
 	//modificar la variable si se puede
 	newTemp := gen.NewTemp()
 	gen.AddGetStack(newTemp, strconv.Itoa(variable.Posicion))
 	gen.AddExpression(newTemp, newTemp, result.Value, "+") //suma
 	//result.IntValue =  + result.IntValue
 	gen.AddSetStack(strconv.Itoa(variable.Posicion), newTemp)
+	gen.AddComment("FIN INCREMENTO")
 	gen.AddBr()
 
 	return result

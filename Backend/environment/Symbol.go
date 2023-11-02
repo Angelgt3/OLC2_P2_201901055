@@ -7,6 +7,7 @@ type Symbol struct {
 	Tipo     TipoExpresion
 	Posicion int
 	Mutable  bool
+	ArrSize  int
 }
 
 // funciones
@@ -26,6 +27,8 @@ type Value struct {
 	FalseLabel []interface{}
 	OutLabel   []interface{}
 	IntValue   int
+	ArrValue   []interface{}
+	ArrSize    int
 }
 
 func NewValue(Val string, temp bool, typee TipoExpresion) Value {
@@ -34,6 +37,8 @@ func NewValue(Val string, temp bool, typee TipoExpresion) Value {
 		IsTemp:   temp,
 		Type:     typee,
 		IntValue: 0,
+		ArrValue: []interface{}{},
+		ArrSize:  0,
 	}
 	return result
 }

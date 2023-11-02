@@ -40,19 +40,11 @@ func (d Declaration) Ejecutar(ast *environment.AST, env interface{}, gen *genera
 	}
 	//validar tipos
 	if result.Type == environment.ARRAY {
-		if d.ArrayValidation(ast, env, result) { //para array
-			gen.AddComment("Agregando una declaracion array")
-			result.Type = d.Tipo
-			newVar = env.(environment.Environment).SaveVariable(d.Id, d.changeable, result.Type)
-			ast.SetRs(d.Id, "vector", result.Type, env.(environment.Environment).GetEntorno(), d.Lin, d.Col)
-		} else if d.MatrizValidation(ast, env, result) { //para matriz
-			gen.AddComment("Agregando una declaracion array")
-			result.Type = d.Tipo
-			newVar = env.(environment.Environment).SaveVariable(d.Id, d.changeable, result.Type)
-			ast.SetRs(d.Id, "matriz", result.Type, env.(environment.Environment).GetEntorno(), d.Lin, d.Col)
-		} else {
-			ast.SetError("La estructura del array es incorrecta", d.Col, d.Lin, env.(environment.Environment).GetEntorno())
-		}
+		newVar = env.(environment.Environment).SaveArray(d.Id, d.Tipo, len(result.ArrValue))
+		gen.AddComment("Iniciando la declaración de un ARRAY")
+		d.ArrayValidation(ast, env, gen, result.ArrValue)
+		gen.AddComment("Se finalizó la declaración de un ARRAY")
+		return result
 		// variable con el mismo tipo y valor || variable sin tipo asignado pero con valor
 	} else if result.Type == d.Tipo || (result.Type != d.Tipo && d.Tipo == environment.NULL) {
 		gen.AddComment("Agregando una declaracion variable")
@@ -164,10 +156,17 @@ func (d Struct) Ejecutar(ast *environment.AST, env interface{}, gen *generator.G
 	return nil
 }
 
-func (d Declaration) ArrayValidation(ast *environment.AST, env interface{}, result environment.Value) bool {
+func (d Declaration) ArrayValidation(ast *environment.AST, env interface{}, gen *generator.Generator, arreglo []interface{}) {
 	//validaciones de vector
-
-	return true
+	for _, exp := range arreglo {
+		if exp.(environment.Value).Type == environment.ARRAY {
+			d.ArrayValidation(ast, env, gen, exp.(environment.Value).ArrValue)
+		} else {
+			envSize := env.(environment.Environment).NewVariable()
+			gen.AddSetStack(strconv.Itoa(envSize.Posicion), exp.(environment.Value).Value)
+			gen.AddBr()
+		}
+	}
 }
 func (d Declaration) MatrizValidation(ast *environment.AST, env interface{}, result environment.Value) bool {
 	//validaciones de matriz

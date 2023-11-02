@@ -19,6 +19,8 @@ func NewRemove(lin int, col int, id string, expr interfaces.Expression) Remove {
 }
 
 func (p Remove) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
+	gen.AddComment("INICIO REMOVE")
+	var result environment.Value
 
-	return nil
+	return result
 }

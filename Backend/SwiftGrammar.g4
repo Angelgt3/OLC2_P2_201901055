@@ -343,7 +343,7 @@ listParams returns[[]interface{} l]
 
 //ACCEDER ARRAY
 listArray returns[interfaces.Expression p]
-: list = listArray CORIZQ expr CORDER { $p = expressions.NewArrayAccess($list.start.GetLine(), $list.start.GetColumn(), $list.p, $expr.e) }
+: list = listArray arr=listAceso { $p = expressions.NewArrayAccess($list.start.GetLine(), $list.start.GetColumn(), $list.p, $arr.l) }
 | ID { $p = expressions.NewCallVariable($ID.line, $ID.pos, $ID.text)}
 //aceder struct
 | list = listArray PUNTO ID { $p = expressions.NewStructAccess($list.start.GetLine(), $list.start.GetColumn(), $list.p, $ID.text)  }

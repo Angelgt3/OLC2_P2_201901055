@@ -1,3 +1,4 @@
+// no casteos
 print("--------------------------");
 print("---FUNCIONES EMBEBIDAS----");
 print("----------14 pts----------");
@@ -50,6 +51,7 @@ duplicar(&numero1)
 print("numero2:")
 print(numero1)
 
+/*
 print("  ");
 let num3 = Float("9.5")
 let num4 = Float("3.6")
@@ -59,12 +61,17 @@ let suma = String(num1 + num2)
 let resta = String(num3 - num4)
 let cadena = String(true) + "->" + String(3.504)
 
-print("valor true: ", String(true))
-print("valor false: ", String(false))
-print("valor 1: ", suma)
-print("valor 2: ", resta)
-print("valor cadena: ", cadena);
-
+print("valor true: ")
+print(String(true))
+print("valor false: ")
+print(String(false))
+print("valor 1: ")
+print(suma)
+print("valor 2: ")
+print(resta)
+print("valor cadena: ");
+print(cadena);
+*/
 /*
 --------------------------
 ---FUNCIONES EMBEBIDAS----

@@ -34,7 +34,7 @@ func NewSwitch(lin int, col int, condition interfaces.Expression, cases []interf
 }
 
 func (p Switch) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
-	gen.AddComment("Generando SWITCH")
+	gen.AddComment("INICIO SWITCH")
 	var condicion, result environment.Value
 	var OutLvls []interface{}
 	condicion = p.Expresion.Ejecutar(ast, env, gen)
@@ -85,6 +85,7 @@ func (p Switch) Ejecutar(ast *environment.AST, env interface{}, gen *generator.G
 	}
 
 	result.OutLabel = copiedSlice
+	gen.AddComment("FIN SWITCH")
 	return result
 }
 

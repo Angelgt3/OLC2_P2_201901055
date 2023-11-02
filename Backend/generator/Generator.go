@@ -171,17 +171,17 @@ func (g *Generator) PrintNil() {
 	}
 */
 func (g *Generator) PrintOutIndex() {
-	g.AddPrintf("%c", "66")  //B
-	g.AddPrintf("%c", "111") //o
-	g.AddPrintf("%c", "117") //u
-	g.AddPrintf("%c", "110") //n
-	g.AddPrintf("%c", "100") //d
-	g.AddPrintf("%c", "115") //s
-	g.AddPrintf("%c", "69")  //E
-	g.AddPrintf("%c", "114") //r
-	g.AddPrintf("%c", "114") //r
-	g.AddPrintf("%c", "111") //o
-	g.AddPrintf("%c", "114") //r
+	g.AddPrintf("c", "66")  //B
+	g.AddPrintf("c", "111") //o
+	g.AddPrintf("c", "117") //u
+	g.AddPrintf("c", "110") //n
+	g.AddPrintf("c", "100") //d
+	g.AddPrintf("c", "115") //s
+	g.AddPrintf("c", "69")  //E
+	g.AddPrintf("c", "114") //r
+	g.AddPrintf("c", "114") //r
+	g.AddPrintf("c", "111") //o
+	g.AddPrintf("c", "114") //r
 	g.AddPrintf("c", "10")
 }
 

@@ -107,7 +107,7 @@ func (p If) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Gener
 }
 
 func (p Elif) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator, salida string) interface{} {
-	gen.AddComment("Generando ELIf")
+	gen.AddComment("INICIO ELIf")
 	var condicion, result environment.Value
 	var OutLvls []interface{}
 	condicion = p.Expresion.Ejecutar(ast, env, gen)
@@ -142,5 +142,6 @@ func (p Elif) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Gen
 	}
 
 	result.OutLabel = copiedSlice
+	gen.AddComment("FIN ELIF")
 	return result
 }

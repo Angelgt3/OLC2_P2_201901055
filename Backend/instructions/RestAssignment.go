@@ -20,6 +20,7 @@ func NewResAssigment(lin int, col int, id string, val interfaces.Expression) Res
 }
 
 func (p RestAssigment) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
+	gen.AddComment("INCIO DECREMENTO")
 	//Traer simbolo
 	result := p.Expresion.Ejecutar(ast, env, gen)
 
@@ -38,13 +39,14 @@ func (p RestAssigment) Ejecutar(ast *environment.AST, env interface{}, gen *gene
 		ast.SetError(" No es posible realizar la restar", p.Col, p.Lin, env.(environment.Environment).GetEntorno())
 		return result
 	}
-	gen.AddComment("DECREMENTO")
+
 	//modificar la variable si se puede
 	newTemp := gen.NewTemp()
 	gen.AddGetStack(newTemp, strconv.Itoa(variable.Posicion))
 	gen.AddExpression(newTemp, newTemp, result.Value, "-") //suma
 	//result.IntValue =  + result.IntValue
 	gen.AddSetStack(strconv.Itoa(variable.Posicion), newTemp)
+	gen.AddComment("FIN DECREMENTO")
 	gen.AddBr()
 
 	return result

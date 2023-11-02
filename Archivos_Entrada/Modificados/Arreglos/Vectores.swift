@@ -1,3 +1,4 @@
+//Funciones de vectores no funciona xd
 print("--------------------------");
 print("---------VECTORES---------");
 print("----------12 pts----------");
@@ -23,23 +24,6 @@ print("arr2: ")
 print(5+8*5-arr2[2])
 print("arr3: ")
 print(arr3[4]*8)
-
-print("=============================================")
-print("================FUNCIONES====================")
-print("=============================================")
-
-arr1.append(9)
-print("append arr1: ", arr1[4])
-
-arr2.removeLast()
-arr2.append(6)
-print("append arr2: ", arr2[5])
-
-arr3.remove(at: 4)
-print("append arr3: ", arr3[4])
-
-print("arr1 vacío: ", arr1.isEmpty)
-print("arr1 cantidad: ", arr1.count)
 
 /*
 --------------------------

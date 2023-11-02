@@ -17,6 +17,8 @@ func NewRemoveLast(lin int, col int, id string) RemoveLast {
 }
 
 func (p RemoveLast) Ejecutar(ast *environment.AST, env interface{}, gen *generator.Generator) interface{} {
+	gen.AddComment("INICIO REMOVELAST")
+	var result environment.Value
 
-	return nil
+	return result
 }
